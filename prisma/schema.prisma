@@ -1,15 +1,81 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id String @id @default(uuid())
+  nome String
+  email String @unique
+  senha String
+  membroComunidade MembroComunidade[]
+
+  criadoItems Item[] @relation("CriadorItem")
+
+  propostasEnviadas Proposta[] @relation("RemetenteProposta")
+  propostasRecebidas Proposta[] @relation("DestinatarioProposta")
+}
+
+model Comunidade {
+  id String @id @default(uuid())
+  nome String 
+  descricao String
+
+  membros MembroComunidade[]
+  propostas Proposta[]
+  itens Item[]
+}
+
+model MembroComunidade {
+  id String @id @default(uuid())
+  usuarioId String
+  comunidadeId String
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+  comunidade Comunidade @relation(fields: [comunidadeId], references: [id])
+}
+
+model Item {
+  id String @id @default(uuid())
+  titulo String
+  descricao String
+  status String
+  comunidadeId String
+  criadorId String
+
+  comunidade Comunidade @relation(fields: [comunidadeId], references: [id])
+  criador Usuario @relation("CriadorItem", fields: [criadorId], references: [id])
+
+  propostasDesejadas Proposta[] @relation("ItemDesejado")
+  propostasOferecidas Proposta[] @relation("ItemOferecido")
+}
+
+model Proposta{
+  id String @id @default(uuid())
+  itemDesejadoId String
+  itemOferecidoId String
+  dataProposta DateTime @default(now())
+  status StatusProposta
+  remetenteId String
+  destinatarioId String
+  comunidadeId String
+
+  itemDesejado Item @relation("ItemDesejado", fields: [itemDesejadoId], references: [id])
+  itemOferecido Item @relation("ItemOferecido", fields: [itemOferecidoId], references: [id])
+  remetente Usuario @relation("RemetenteProposta", fields: [remetenteId], references: [id])
+  destinatario Usuario @relation("DestinatarioProposta", fields: [destinatarioId], references: [id])
+  comunidade Comunidade @relation(fields: [comunidadeId], references: [id])
+
+}
+
+enum StatusProposta {
+  PENDENTE
+  ACEITO
+  REJEITADO
 }
