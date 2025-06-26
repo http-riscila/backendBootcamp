@@ -9,73 +9,78 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Usuario {
+model User {
   id String @id @default(uuid())
-  nome String
+  name String
   email String @unique
-  senha String
-  membroComunidade MembroComunidade[]
+  password String
+  communityMember CommunityMember[]
 
-  criadoItems Item[] @relation("CriadorItem")
+  creator Item[] @relation("CreatedBy")
 
-  propostasEnviadas Proposta[] @relation("RemetenteProposta")
-  propostasRecebidas Proposta[] @relation("DestinatarioProposta")
+  sentProposal Proposal[] @relation("ProposalSender")
+  receivedProposal Proposal[] @relation("ProposalRecipient")
 }
 
-model Comunidade {
+model Community {
   id String @id @default(uuid())
-  nome String 
-  descricao String
+  name String 
+  description String?
 
-  membros MembroComunidade[]
-  propostas Proposta[]
-  itens Item[]
+  members CommunityMember[]
+  proposals Proposal[]
+  items Item[]
 }
 
-model MembroComunidade {
+model CommunityMember {
   id String @id @default(uuid())
-  usuarioId String
-  comunidadeId String
+  userId String
+  communityId String
 
-  usuario Usuario @relation(fields: [usuarioId], references: [id])
-  comunidade Comunidade @relation(fields: [comunidadeId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+  community Community @relation(fields: [communityId], references: [id])
 }
 
 model Item {
   id String @id @default(uuid())
-  titulo String
-  descricao String
-  status String
-  comunidadeId String
-  criadorId String
+  name String
+  description String?
+  status ItemStatus
+  communityId String
+  createdBy String
 
-  comunidade Comunidade @relation(fields: [comunidadeId], references: [id])
-  criador Usuario @relation("CriadorItem", fields: [criadorId], references: [id])
+  community Community @relation(fields: [communityId], references: [id])
+  creator User @relation("CreatedBy", fields: [createdBy], references: [id])
 
-  propostasDesejadas Proposta[] @relation("ItemDesejado")
-  propostasOferecidas Proposta[] @relation("ItemOferecido")
+  desiredProposals Proposal[] @relation("DesiredItem")
+  OfferedProposals Proposal[] @relation("OfferedItem")
 }
 
-model Proposta{
+model Proposal{
   id String @id @default(uuid())
-  itemDesejadoId String
-  itemOferecidoId String
-  dataProposta DateTime @default(now())
-  status StatusProposta
-  remetenteId String
-  destinatarioId String
-  comunidadeId String
+  desiredItemId String
+  offeredItemId String
+  proposalDate DateTime @default(now())
+  status ProposalStatus
+  senderId String
+  recipientId String
+  communityId String
 
-  itemDesejado Item @relation("ItemDesejado", fields: [itemDesejadoId], references: [id])
-  itemOferecido Item @relation("ItemOferecido", fields: [itemOferecidoId], references: [id])
-  remetente Usuario @relation("RemetenteProposta", fields: [remetenteId], references: [id])
-  destinatario Usuario @relation("DestinatarioProposta", fields: [destinatarioId], references: [id])
-  comunidade Comunidade @relation(fields: [comunidadeId], references: [id])
+  desiredItem Item @relation("DesiredItem", fields: [desiredItemId], references: [id])
+  offeredItem Item @relation("OfferedItem", fields: [offeredItemId], references: [id])
+  sender User @relation("ProposalSender", fields: [senderId], references: [id])
+  recipient User @relation("ProposalRecipient", fields: [recipientId], references: [id])
+  community Community @relation(fields: [communityId], references: [id])
 
 }
 
-enum StatusProposta {
-  PENDENTE
-  ACEITO
-  REJEITADO
+enum ProposalStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum ItemStatus {
+  AVAILABLE
+  NOT_AVAILABLE
 }
