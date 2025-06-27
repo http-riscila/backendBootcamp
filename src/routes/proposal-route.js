@@ -1,9 +1,10 @@
-const express = require('express');
-const router = express.Router();
-const proposalController = require('../controllers/proposalController');
+import express from "express";
+import proposalController from "../controllers/proposal-controller.js";
 
-// Routes for proposal management
-router.put('/:id', proposalController.updateProposal);
-router.delete('/:id', proposalController.deleteProposal);
+const proposalRouter = express.Router();
 
-module.exports = router;
+// Routes for Proposals
+proposalRouter.patch("/proposals/:id/status", proposalController.updateStatus);
+proposalRouter.delete("/proposals/:id", proposalController.delete);
+
+export default proposalRouter; 

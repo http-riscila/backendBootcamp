@@ -1,0 +1,45 @@
+import prisma from "../config/prisma-client.js";
+
+const proposalService = {
+    
+  // UPDATE
+  async updateStatus(id, status) {
+    return await prisma.proposal.update({
+      where: { id },
+      data: { status },
+      include: {
+        desiredItem: true,
+        offeredItem: true,
+        sender: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        },
+        recipient: {
+          select: {
+            id: true,
+            name: true,
+            email: true
+          }
+        },
+        community: {
+          select: {
+            id: true,
+            name: true
+          }
+        }
+      }
+    });
+  },
+
+  // DELETE
+  async delete(id) {
+    return await prisma.proposal.delete({
+      where: { id }
+    });
+  }
+};
+
+export default proposalService; 
