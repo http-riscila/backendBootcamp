@@ -5,16 +5,18 @@ import {
   getUserById,
   updateUser,
   partiallyUpdateUser,
-  deleteUser
+  deleteUser,
+  login,
 } from "../controllers/user-controller.js";
 
-const router = express.Router();
+const usersRouter = express.Router();
 
-router.post("/", createUser);
-router.get("/", getAllUsers);
-router.get("/:id", getUserById);
-router.put("/:id", updateUser);
-router.patch("/:id", partiallyUpdateUser);
-router.delete("/:id", deleteUser);
+usersRouter.post("/users", createUser);
+usersRouter.get("/users", getAllUsers);
+usersRouter.get("/users/:id", getUserById);
+usersRouter.put("/users/:id", updateUser);
+usersRouter.patch("/users/:id", partiallyUpdateUser);
+usersRouter.delete("/users/:id", deleteUser);
+usersRouter.post("/login", login);
 
-export default router;
+export default usersRouter;

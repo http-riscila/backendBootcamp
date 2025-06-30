@@ -1,31 +1,28 @@
 import * as userService from "../services/user-services.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 // Criar novo usuário
 async function createUser(req, res) {
   try {
     const { name, email, password } = req.body;
-    
-    // Validação básica
-    if (!name || !email || !password) {
-      return res.status(400).json({ 
-        error: "Nome, email e senha são obrigatórios" 
-      });
-    }
 
     // Verificar se email já existe
     const existingUser = await userService.getByEmail(email);
     if (existingUser) {
-      return res.status(400).json({ 
-        error: "Email já está em uso" 
+      return res.status(400).json({
+        error: "Email já está em uso",
       });
     }
 
-    const user = await userService.create({ name, email, password });
-    
-    // Remover senha da resposta
-    const { password: _, ...userWithoutPassword } = user;
-    
-    res.status(201).json(userWithoutPassword);
+    const hashedPassword = bcrypt.hashSync(password, 10);
+
+    const user = await userService.create({
+      name,
+      email,
+      password: hashedPassword,
+    });
+    res.status(201).json(user);
   } catch (error) {
     console.error("Erro ao criar usuário:", error);
     res.status(500).json({ error: "Erro interno do servidor" });
@@ -36,7 +33,7 @@ async function createUser(req, res) {
 async function getAllUsers(req, res) {
   try {
     const users = await userService.getAll();
-    res.json(users);
+    res.status(200).json(users);
   } catch (error) {
     console.error("Erro ao buscar usuários:", error);
     res.status(500).json({ error: "Erro interno do servidor" });
@@ -48,12 +45,12 @@ async function getUserById(req, res) {
   try {
     const { id } = req.params;
     const user = await userService.getById(id);
-    
+
     if (!user) {
       return res.status(404).json({ error: "Usuário não encontrado" });
     }
-    
-    res.json(user);
+
+    res.status(200).json(user);
   } catch (error) {
     console.error("Erro ao buscar usuário:", error);
     res.status(500).json({ error: "Erro interno do servidor" });
@@ -65,13 +62,6 @@ async function updateUser(req, res) {
   try {
     const { id } = req.params;
     const { name, email, password } = req.body;
-    
-    // Validação básica
-    if (!name || !email || !password) {
-      return res.status(400).json({ 
-        error: "Nome, email e senha são obrigatórios" 
-      });
-    }
 
     // Verificar se o usuário existe
     const existingUser = await userService.getById(id);
@@ -82,13 +72,13 @@ async function updateUser(req, res) {
     // Verificar se email já está em uso por outro usuário
     const userWithEmail = await userService.getByEmail(email);
     if (userWithEmail && userWithEmail.id !== id) {
-      return res.status(400).json({ 
-        error: "Email já está em uso por outro usuário" 
+      return res.status(400).json({
+        error: "Email já está em uso por outro usuário",
       });
     }
 
     const updatedUser = await userService.update(id, { name, email, password });
-    res.json(updatedUser);
+    res.status(200).json(updatedUser);
   } catch (error) {
     console.error("Erro ao atualizar usuário:", error);
     res.status(500).json({ error: "Erro interno do servidor" });
@@ -100,7 +90,7 @@ async function partiallyUpdateUser(req, res) {
   try {
     const { id } = req.params;
     const updateData = req.body;
-    
+
     // Verificar se o usuário existe
     const existingUser = await userService.getById(id);
     if (!existingUser) {
@@ -111,14 +101,14 @@ async function partiallyUpdateUser(req, res) {
     if (updateData.email) {
       const userWithEmail = await userService.getByEmail(updateData.email);
       if (userWithEmail && userWithEmail.id !== id) {
-        return res.status(400).json({ 
-          error: "Email já está em uso por outro usuário" 
+        return res.status(400).json({
+          error: "Email já está em uso por outro usuário",
         });
       }
     }
 
     const updatedUser = await userService.partiallyUpdate(id, updateData);
-    res.json(updatedUser);
+    res.status(200).json(updatedUser);
   } catch (error) {
     console.error("Erro ao atualizar usuário:", error);
     res.status(500).json({ error: "Erro interno do servidor" });
@@ -129,7 +119,7 @@ async function partiallyUpdateUser(req, res) {
 async function deleteUser(req, res) {
   try {
     const { id } = req.params;
-    
+
     // Verificar se o usuário existe
     const existingUser = await userService.getById(id);
     if (!existingUser) {
@@ -137,12 +127,38 @@ async function deleteUser(req, res) {
     }
 
     const deletedUser = await userService.remove(id);
-    res.json({ 
-      message: "Usuário deletado com sucesso", 
-      user: deletedUser 
-    });
+    res.status(204).send();
   } catch (error) {
     console.error("Erro ao deletar usuário:", error);
+    res.status(500).json({ error: "Erro interno do servidor" });
+  }
+}
+
+async function login(req, res) {
+  const credentials = req.body;
+  try {
+    const user = await userService.getByEmail(credentials.email);
+
+    if (!user) {
+      return res.status(404).json({ error: "Usuário não encontrado" });
+    }
+
+    const isPasswordValid = bcrypt.compareSync(
+      credentials.password,
+      user.password
+    );
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: "Senha inválida" });
+    }
+
+    const payload = { id: user.id };
+    const token = jwt.sign(payload, process.env.SECRET_JWT, {
+      expiresIn: "1h", // Token válido por 1 hora
+    });
+    return res.status(200).json({ payload, token });
+  } catch (error) {
+    console.error("Erro ao fazer login:", error);
     res.status(500).json({ error: "Erro interno do servidor" });
   }
 }
@@ -153,5 +169,6 @@ export {
   getUserById,
   updateUser,
   partiallyUpdateUser,
-  deleteUser
+  deleteUser,
+  login,
 };
