@@ -1,4 +1,4 @@
-import prisma from "@prisma/client";
+import prisma from "../config/prisma-client.js";
 
 async function create(proposalData) {
   return await prisma.proposal.create({
@@ -14,8 +14,8 @@ async function create(proposalData) {
   });
 }
 
-async function get() {
+async function getAll() {
   return await prisma.proposal.findMany();
 }
 
-export default { create, get };
+export default { create, getAll };
