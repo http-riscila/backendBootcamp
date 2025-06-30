@@ -1,10 +1,10 @@
-import { get, create } from "../services/proposalService.js";
+import { create, getAll } from "../services/proposal-services.js";
 
 async function createProposal(req, res) {
   const proposalData = req.body;
 
   try {
-    const newProposal = await proposalService.createProposal(proposalData);
+    const newProposal = await create(proposalData);
     res.status(201).json(newProposal);
   } catch (error) {
     res
@@ -13,9 +13,9 @@ async function createProposal(req, res) {
   }
 }
 
-async function getProposal(req, res) {
+async function getAllProposals(req, res) {
   try {
-    const proposals = await proposalService.getProposal();
+    const proposals = await getAll();
     res.status(200).json(proposals);
   } catch (error) {
     res
@@ -24,4 +24,4 @@ async function getProposal(req, res) {
   }
 }
 
-export { createProposal, getProposal };
+export { createProposal, getAllProposals };

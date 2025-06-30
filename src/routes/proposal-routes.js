@@ -1,12 +1,12 @@
 import express from "express";
 import {
   createProposal,
-  getProposal,
+  getAllProposals,
 } from "../controllers/proposal-controllers.js";
 
 const proposalsRouter = express.Router();
 
-router.post("/proposals", createProposal);
-router.get("/proposals", getProposal);
+proposalsRouter.post("/proposals", createProposal);
+proposalsRouter.get("/proposals", getAllProposals);
 
 export default proposalsRouter;
