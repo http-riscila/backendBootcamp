@@ -5,7 +5,12 @@ async function create(userData) {
     data: {
       name: userData.name,
       email: userData.email,
-      password: userData.password, 
+      password: userData.password,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
     },
   });
 }
@@ -56,8 +61,8 @@ async function update(id, newUserData) {
 async function partiallyUpdate(id, data) {
   // Remove senha do objeto se estiver presente e não for para atualização
   const { password, ...safeData } = data;
-  
-  const updateData = password 
+
+  const updateData = password
     ? { ...safeData, password } // Em produção, hashear a senha
     : safeData;
 
