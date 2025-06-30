@@ -13,7 +13,9 @@ async function createItem(req, res) {
     return res.status(201).json(newItem);
   } catch (error) {
     console.error("Error creating a new item:", error);
-    return res.status(500).json({ error: "Error creating a new item" });
+    return res
+      .status(500)
+      .json({ error: "Error creating a new item", details: error.message });
   }
 }
 
@@ -23,7 +25,9 @@ async function getAllItems(req, res) {
     return res.status(200).json(items);
   } catch (error) {
     console.error("Error getting items:", error);
-    return res.status(500).json({ error: "Error getting items" });
+    return res
+      .status(500)
+      .json({ error: "Error getting items", details: error.message });
   }
 }
 
@@ -46,7 +50,9 @@ async function updateItem(req, res) {
     }
   } catch (error) {
     console.error("Error updating item:", error);
-    return res.status(500).json({ error: "Error updating item" });
+    return res
+      .status(500)
+      .json({ error: "Error updating item", details: error.message });
   }
 }
 
@@ -69,7 +75,9 @@ async function partiallyUpdateItem(req, res) {
     }
   } catch (error) {
     console.error("Error partially updating item:", error);
-    return res.status(500).json({ error: "Error partially updating item" });
+    return res
+      .status(500)
+      .json({ error: "Error partially updating item", details: error.message });
   }
 }
 
@@ -90,7 +98,9 @@ async function removeItem(req, res) {
     }
   } catch (error) {
     console.error("Error removing item:", error);
-    return res.status(500).json({ error: "Error removing item" });
+    return res
+      .status(500)
+      .json({ error: "Error removing item", details: error.message });
   }
 }
 
