@@ -1,86 +1,15 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
-  
+  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-model User {
-  id String @id @default(uuid())
-  name String
-  email String @unique
-  password String
-  communityMember CommunityMember[]
-
-  creator Item[] @relation("CreatedBy")
-
-  sentProposal Proposal[] @relation("ProposalSender")
-  receivedProposal Proposal[] @relation("ProposalRecipient")
-}
-
-model Community {
-  id String @id @default(uuid())
-  name String 
-  description String?
-
-  members CommunityMember[]
-  proposals Proposal[]
-  items Item[]
-}
-
-model CommunityMember {
-  id String @id @default(uuid())
-  userId String
-  communityId String
-
-  user User @relation(fields: [userId], references: [id])
-  community Community @relation(fields: [communityId], references: [id])
-}
-
-model Item {
-  id String @id @default(uuid())
-  name String
-  description String?
-  status ItemStatus
-  communityId String
-  createdBy String
-
-  community Community @relation(fields: [communityId], references: [id])
-  creator User @relation("CreatedBy", fields: [createdBy], references: [id])
-
-  desiredProposals Proposal[] @relation("DesiredItem")
-  OfferedProposals Proposal[] @relation("OfferedItem")
-}
-
-model Proposal{
-  id String @id @default(uuid())
-  desiredItemId String
-  offeredItemId String
-  proposalDate DateTime @default(now())
-  status ProposalStatus
-  senderId String
-  recipientId String
-  communityId String
-
-  desiredItem Item @relation("DesiredItem", fields: [desiredItemId], references: [id])
-  offeredItem Item @relation("OfferedItem", fields: [offeredItemId], references: [id])
-  sender User @relation("ProposalSender", fields: [senderId], references: [id])
-  recipient User @relation("ProposalRecipient", fields: [recipientId], references: [id])
-  community Community @relation(fields: [communityId], references: [id])
-
-}
-
-enum ProposalStatus {
-  PENDING
-  ACCEPTED
-  REJECTED
-}
-
-enum ItemStatus {
-  AVAILABLE
-  NOT_AVAILABLE
 }
