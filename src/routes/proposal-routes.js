@@ -1,12 +1,12 @@
-import express from 'express';
-import { createProposal, getProposal } from '../controllers/proposal-controllers.js';
+import express from "express";
+import {
+  createProposal,
+  getAllProposals,
+} from "../controllers/proposal-controllers.js";
 
-const proposalRouter = express.Router();
+const proposalsRouter = express.Router();
 
-// Rota POST para criar proposta
-router.post('/proposals', createProposal);
+proposalsRouter.post("/proposals", createProposal);
+proposalsRouter.get("/proposals", getAllProposals);
 
-// Rota GET para listar propostas
-router.get('/proposals', getProposal);
-
-export default proposalRouter;
+export default proposalsRouter;
