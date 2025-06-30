@@ -1,6 +1,7 @@
 import {
   create,
   getAll,
+  getById,
   update,
   partiallyUpdate,
   remove,
@@ -28,6 +29,26 @@ async function getAllItems(req, res) {
     return res
       .status(500)
       .json({ error: "Error getting items", details: error.message });
+  }
+}
+
+async function getItemById(req, res) {
+  try {
+    const { id } = req.params;
+    const parsedId = Number(id);
+
+    const item = await getById(parsedId);
+
+    if (item) {
+      return res.status(200).json(item);
+    } else {
+      return res.status(404).json({ error: "Item not found" });
+    }
+  } catch (error) {
+    console.error({
+      error: "Error getting item by ID:",
+      details: error.message,
+    });
   }
 }
 
@@ -104,4 +125,11 @@ async function removeItem(req, res) {
   }
 }
 
-export { createItem, getAllItems, updateItem, partiallyUpdateItem, removeItem };
+export {
+  createItem,
+  getAllItems,
+  getItemById,
+  updateItem,
+  partiallyUpdateItem,
+  removeItem,
+};

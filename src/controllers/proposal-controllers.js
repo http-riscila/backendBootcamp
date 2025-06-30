@@ -1,10 +1,16 @@
-import { get, create } from "../services/proposalService.js";
+import {
+  create,
+  getAll,
+  getById,
+  update,
+  partiallyUpdate,
+  remove,
+} from "../services/proposal-services.js";
 
 async function createProposal(req, res) {
   const proposalData = req.body;
-
   try {
-    const newProposal = await proposalService.createProposal(proposalData);
+    const newProposal = await create(proposalData);
     res.status(201).json(newProposal);
   } catch (error) {
     res
@@ -13,9 +19,9 @@ async function createProposal(req, res) {
   }
 }
 
-async function getProposal(req, res) {
+async function getAllProposals(req, res) {
   try {
-    const proposals = await proposalService.getProposal();
+    const proposals = await getAll();
     res.status(200).json(proposals);
   } catch (error) {
     res
@@ -24,4 +30,73 @@ async function getProposal(req, res) {
   }
 }
 
-export { createProposal, getProposal };
+async function getProposalById(req, res) {
+  try {
+    const { id } = req.params;
+    const parsedId = Number(id);
+
+    const proposal = await getById(parsedId);
+
+    if (proposal) {
+      res.status(200).json(proposal);
+    } else {
+      res.status(404).json({ error: "Proposal not found" });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error getting proposal", details: error.message });
+  }
+}
+
+async function updateProposal(req, res) {
+  try {
+    const { id } = req.params;
+    const parsedId = Number(id);
+    const newProposalData = req.body;
+
+    const updatedProposal = await update(parsedId, newProposalData);
+    res.status(200).json(updatedProposal);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error updating proposal", details: error.message });
+  }
+}
+
+async function partiallyUpdateProposal(req, res) {
+  try {
+    const { id } = req.params;
+    const parsedId = Number(id);
+    const data = req.body;
+
+    const updatedProposal = await partiallyUpdate(parsedId, data);
+    res.status(200).json(updatedProposal);
+  } catch (error) {
+    res.status(500).json({
+      error: "Error partially updating proposal",
+      details: error.message,
+    });
+  }
+}
+
+async function removeProposal(req, res) {
+  try {
+    const { id } = req.params;
+    const parsedId = Number(id);
+    const deletedProposal = await remove(parsedId);
+    res.status(204).send();
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error removing proposal", details: error.message });
+  }
+}
+export {
+  createProposal,
+  getAllProposals,
+  getProposalById,
+  updateProposal,
+  partiallyUpdateProposal,
+  removeProposal,
+};

@@ -1,12 +1,20 @@
 import express from "express";
 import {
   createProposal,
-  getProposal,
+  getAllProposals,
+  getProposalById,
+  updateProposal,
+  partiallyUpdateProposal,
+  removeProposal,
 } from "../controllers/proposal-controllers.js";
 
 const proposalsRouter = express.Router();
 
-router.post("/proposals", createProposal);
-router.get("/proposals", getProposal);
+proposalsRouter.post("/proposals", createProposal);
+proposalsRouter.get("/proposals", getAllProposals);
+proposalsRouter.get("/proposals/:id", getProposalById);
+proposalsRouter.put("/proposals/:id", updateProposal);
+proposalsRouter.patch("/proposals/:id", partiallyUpdateProposal);
+proposalsRouter.delete("/proposals/:id", removeProposal);
 
 export default proposalsRouter;

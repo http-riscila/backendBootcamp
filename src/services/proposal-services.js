@@ -1,4 +1,4 @@
-import prisma from "@prisma/client";
+import prisma from "../config/prisma-client.js";
 
 async function create(proposalData) {
   return await prisma.proposal.create({
@@ -14,8 +14,41 @@ async function create(proposalData) {
   });
 }
 
-async function get() {
+async function getAll() {
   return await prisma.proposal.findMany();
 }
 
-export default { create, get };
+async function getById(id) {
+  return await prisma.proposal.findUnique({
+    where: { id },
+  });
+}
+
+async function update(id, newProposalData) {
+  return prisma.proposal.update({
+    where: { id },
+    data: {
+      desiredItemId: newProposalData.desiredItemId,
+      offeredItemId: newProposalData.offeredItemId,
+      status: newProposalData.status,
+      senderId: newProposalData.senderId,
+      recipientId: newProposalData.recipientId,
+      communityId: newProposalData.communityId,
+    },
+  });
+}
+
+async function partiallyUpdate(id, data) {
+  return await prisma.proposal.update({
+    where: { id },
+    data,
+  });
+}
+
+async function remove(id) {
+  return await prisma.proposal.delete({
+    where: { id },
+  });
+}
+
+export default { create, getAll, getById, update, partiallyUpdate, remove };
