@@ -16,6 +16,12 @@ async function getAll() {
   return prisma.item.findMany();
 }
 
+async function getById(id) {
+  return prisma.item.findUnique({
+    where: { id },
+  });
+}
+
 async function update(id, newItemData) {
   return prisma.item.update({
     where: { id },
@@ -42,4 +48,4 @@ async function remove(id) {
   });
 }
 
-export { create, getAll, update, partiallyUpdate, remove };
+export { create, getAll, getById, update, partiallyUpdate, remove };
