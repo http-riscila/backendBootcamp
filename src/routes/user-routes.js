@@ -1,6 +1,5 @@
 import express from "express";
 import {
-  createUser,
   getAllUsers,
   getUserById,
   updateUser,
@@ -12,7 +11,6 @@ import authenticateUser from "../middlewares/authenticate.js";
 
 const usersRouter = express.Router();
 
-usersRouter.post("/users", createUser);
 usersRouter.get("/users", getAllUsers);
 usersRouter.get("/users/:id", authenticateUser, getUserById);
 usersRouter.put("/users/:id", authenticateUser, updateUser);

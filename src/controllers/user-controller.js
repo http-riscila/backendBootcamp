@@ -1,32 +1,4 @@
 import * as userService from "../services/user-services.js";
-import bcrypt from "bcryptjs";
-
-// Criar novo usuário
-async function createUser(req, res) {
-  try {
-    const { name, email, password } = req.body;
-
-    // Verificar se email já existe
-    const existingUser = await userService.getByEmail(email);
-    if (existingUser) {
-      return res.status(400).json({
-        error: "Email já está em uso",
-      });
-    }
-
-    const hashedPassword = bcrypt.hashSync(password, 10);
-
-    const user = await userService.create({
-      name,
-      email,
-      password: hashedPassword,
-    });
-    res.status(201).json(user);
-  } catch (error) {
-    console.error("Erro ao criar usuário:", error);
-    res.status(500).json({ error: "Erro interno do servidor" });
-  }
-}
 
 // Buscar todos os usuários
 async function getAllUsers(req, res) {
@@ -134,7 +106,6 @@ async function deleteUser(req, res) {
 }
 
 export {
-  createUser,
   getAllUsers,
   getUserById,
   updateUser,

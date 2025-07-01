@@ -6,7 +6,6 @@ import {
   partiallyUpdate,
   remove,
 } from "../services/member-service.js";
-import prisma from "../config/prisma-client.js";
 
 async function createMember(req, res) {
   const memberData = req.body;
