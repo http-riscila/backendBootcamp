@@ -1,8 +1,7 @@
 import prisma from "../config/prisma-client.js";
 
 async function create(communityData) {
-  return prisma.community.update({
-    where: { id },
+  return prisma.community.create({
     data: {
       name: communityData.name,
       description: communityData.description,
