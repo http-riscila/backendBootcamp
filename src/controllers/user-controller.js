@@ -1,6 +1,5 @@
 import * as userService from "../services/user-services.js";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 
 // Criar novo usuário
 async function createUser(req, res) {
@@ -134,40 +133,6 @@ async function deleteUser(req, res) {
   }
 }
 
-async function login(req, res) {
-  const credentials = req.body;
-  try {
-    const user = await userService.getByEmail(credentials.email);
-
-    if (!user) {
-      return res.status(404).json({ error: "Usuário não encontrado" });
-    }
-
-    const isPasswordValid = bcrypt.compareSync(
-      credentials.password,
-      user.password
-    );
-
-    if (!isPasswordValid) {
-      return res.status(401).json({ error: "Senha inválida" });
-    }
-
-    const token = jwt.sign(
-      { id: user.id, isAdmin: user.isAdmin },
-      process.env.SECRET_JWT,
-      {
-        expiresIn: "1h", // Token válido por 1 hora
-      }
-    );
-    return res
-      .status(200)
-      .json({ message: "Login realizado com sucesso", token });
-  } catch (error) {
-    console.error("Erro ao fazer login:", error);
-    res.status(500).json({ error: "Erro interno do servidor" });
-  }
-}
-
 export {
   createUser,
   getAllUsers,
@@ -175,5 +140,4 @@ export {
   updateUser,
   partiallyUpdateUser,
   deleteUser,
-  login,
 };

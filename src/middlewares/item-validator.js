@@ -27,8 +27,8 @@ const isStatusValid = body("status")
   .notEmpty()
   .withMessage("Status cannot be empty")
   .bail()
-  .isIn(["PENDING", "ACCEPTED", "REJECTED"])
-  .withMessage("Status must be one of: PENDING, ACCEPTED, REJECTED");
+  .isIn(["AVAILABLE", "NOT_AVAILABLE"])
+  .withMessage("Status must be one of: AVAILABLE or NOT_AVAILABLE");
 
 const isCommunityIdValid = body("communityId")
   .notEmpty()

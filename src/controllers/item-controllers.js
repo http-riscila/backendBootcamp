@@ -10,7 +10,8 @@ import {
 async function createItem(req, res) {
   try {
     const itemData = req.body;
-    const newItem = await create(itemData);
+    const userId = req.user.id;
+    const newItem = await create(itemData, userId);
     return res.status(201).json(newItem);
   } catch (error) {
     console.error("Error creating a new item:", error);
@@ -59,9 +60,7 @@ async function updateItem(req, res) {
 
     const newItemData = req.body;
 
-    const existentItem = await prisma.item.findUnique({
-      where: { id: parsedId },
-    });
+    const existentItem = await getById(parsedId);
 
     if (existentItem) {
       const updatedItem = await update(parsedId, newItemData);
@@ -84,9 +83,7 @@ async function partiallyUpdateItem(req, res) {
 
     const data = req.body;
 
-    const existentItem = await prisma.item.findUnique({
-      where: { id: parsedId },
-    });
+    const existentItem = await getById(parsedId);
 
     if (existentItem) {
       const partiallyUpdatedItem = await partiallyUpdate(parsedId, data);
@@ -107,9 +104,7 @@ async function removeItem(req, res) {
     const { id } = req.params;
     const parsedId = Number(id);
 
-    const existentItem = await prisma.item.findUnique({
-      where: { id: parsedId },
-    });
+    const existentItem = await getById(parsedId);
 
     if (existentItem) {
       const removedItem = await remove(parsedId);

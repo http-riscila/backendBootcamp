@@ -4,6 +4,7 @@ import proposalsRouter from "./routes/proposal-routes.js";
 import communityRoutes from "./routes/community-route.js";
 import usersRouter from "./routes/user-routes.js";
 import membersRouter from "./routes/member-routes.js";
+import authRouter from "./routes/auth-routes.js";
 
 const app = express();
 
@@ -14,5 +15,6 @@ app.use("/api", proposalsRouter);
 app.use("/api", communityRoutes);
 app.use("/api", usersRouter);
 app.use("/api", membersRouter);
+app.use("/auth", authRouter);
 
 export default app;

@@ -33,10 +33,10 @@ async function getAllMembers(req, res) {
 
 async function getMemberById(req, res) {
   const { id } = req.params;
+  const parsedId = Number(id);
   try {
-    const member = await prisma.communityMember.findUnique({
-      where: { id: Number(id) },
-    });
+    const member = await getById(parsedId);
+
     if (!member) {
       return res.status(404).json({ error: "Member not found" });
     }
@@ -50,11 +50,10 @@ async function getMemberById(req, res) {
 
 async function updateMember(req, res) {
   const { id } = req.params;
+  const parsedId = Number(id);
   const memberNewData = req.body;
   try {
-    const existentMember = await prisma.communityMember.findUnique({
-      where: { id: Number(id) },
-    });
+    const existentMember = await getById(parsedId);
     if (existentMember) {
       const updatedMember = await update(Number(id), memberNewData);
       return res.status(200).json(updatedMember);
@@ -70,13 +69,12 @@ async function updateMember(req, res) {
 
 async function updatePartiallyMember(req, res) {
   const { id } = req.params;
+  const parsedId = Number(id);
   const memberNewData = req.body;
   try {
-    const existentMember = await prisma.communityMember.findUnique({
-      where: { id: Number(id) },
-    });
+    const existentMember = await getById(parsedId);
     if (existentMember) {
-      const updatedMember = await update(Number(id), memberNewData);
+      const updatedMember = await partiallyUpdate(parsedId, memberNewData);
       return res.status(200).json(updatedMember);
     } else {
       return res.status(404).json({ error: "Member not found" });
@@ -91,10 +89,9 @@ async function updatePartiallyMember(req, res) {
 
 async function deleteMember(req, res) {
   const { id } = req.params;
+  const parsedId = Number(id);
   try {
-    const existentMember = await prisma.communityMember.findUnique({
-      where: { id: Number(id) },
-    });
+    const existentMember = await getById(parsedId);
     if (existentMember) {
       const deletedMember = await remove(Number(id));
       return res.status(204).send();

@@ -55,6 +55,12 @@ async function updateProposal(req, res) {
     const parsedId = Number(id);
     const newProposalData = req.body;
 
+    const existentProposal = await getById(parsedId);
+
+    if (!existentProposal) {
+      return res.status(404).json({ error: "Proposal not found" });
+    }
+
     const updatedProposal = await update(parsedId, newProposalData);
     res.status(200).json(updatedProposal);
   } catch (error) {
@@ -70,6 +76,12 @@ async function partiallyUpdateProposal(req, res) {
     const parsedId = Number(id);
     const data = req.body;
 
+    const existentProposal = await getById(parsedId);
+
+    if (!existentProposal) {
+      return res.status(404).json({ error: "Proposal not found" });
+    }
+
     const updatedProposal = await partiallyUpdate(parsedId, data);
     res.status(200).json(updatedProposal);
   } catch (error) {
@@ -84,6 +96,13 @@ async function removeProposal(req, res) {
   try {
     const { id } = req.params;
     const parsedId = Number(id);
+
+    const existentProposal = await getById(parsedId);
+
+    if (!existentProposal) {
+      return res.status(404).json({ error: "Proposal not found" });
+    }
+
     const deletedProposal = await remove(parsedId);
     res.status(204).send();
   } catch (error) {

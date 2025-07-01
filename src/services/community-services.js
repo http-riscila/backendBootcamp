@@ -8,15 +8,6 @@ async function create(communityData, userId) {
       createdBy: userId,
     },
   });
-
-  const communityMember = await prisma.communityMember.create({
-    data: {
-      userId: userId,
-      communityId: newCommunity.id,
-      isAdmin: true,
-    },
-  });
-
   return newCommunity;
 }
 
