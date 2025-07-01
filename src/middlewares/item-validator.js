@@ -23,6 +23,13 @@ const isDescriptionValid = body("description")
   .isLength({ min: 10, max: 500 })
   .withMessage("Description must be between 10 and 500 characters");
 
+const isStatusValid = body("status")
+  .notEmpty()
+  .withMessage("Status cannot be empty")
+  .bail()
+  .isIn(["PENDING", "ACCEPTED", "REJECTED"])
+  .withMessage("Status must be one of: PENDING, ACCEPTED, REJECTED");
+
 const isCommunityIdValid = body("communityId")
   .notEmpty()
   .withMessage("Community ID cannot be empty");

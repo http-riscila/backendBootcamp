@@ -1,3 +1,5 @@
+import jwt from "jsonwebtoken";
+
 function authenticateUser(req, res, next) {
   const { authorization } = req.headers;
 
@@ -6,14 +8,17 @@ function authenticateUser(req, res, next) {
   }
 
   try {
-    const token = authorization.replace("Bearer", "");
+    const token = authorization.replace("Bearer", "").trim();
 
-    const { userId } = jwt.decode(token, process.env.SECRET_JWT);
+    const decoded = jwt.verify(token, process.env.SECRET_JWT);
 
-    if (!userId) {
+    if (!decoded.id) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-
+    req.user = {
+      id: decoded.id,
+      isAdmin: decoded.isAdmin,
+    };
     next();
   } catch (error) {
     console.error("Error validating authorization:", error);

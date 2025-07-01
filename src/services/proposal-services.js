@@ -51,4 +51,4 @@ async function remove(id) {
   });
 }
 
-export default { create, getAll, getById, update, partiallyUpdate, remove };
+export { create, getAll, getById, update, partiallyUpdate, remove };

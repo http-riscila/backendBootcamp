@@ -9,9 +9,10 @@ import {
 import prisma from "../config/prisma-client.js";
 
 async function createCommunity(req, res) {
+  const userId = req.user.id;
   const communityData = req.body;
   try {
-    const newCommunity = await create(communityData);
+    const newCommunity = await create(communityData, userId);
     res.status(201).json(newCommunity);
   } catch (error) {
     res.status(400).json({
@@ -30,7 +31,7 @@ async function getAllCommunities(req, res) {
   }
 }
 
-export const getCommunityById = async (req, res) => {
+async function getCommunityById(req, res) {
   const { id } = req.params;
   const parsedId = Number(id);
 
@@ -47,7 +48,7 @@ export const getCommunityById = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-};
+}
 
 async function updateCommunity(req, res) {
   try {

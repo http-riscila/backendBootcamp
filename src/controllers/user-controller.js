@@ -152,11 +152,16 @@ async function login(req, res) {
       return res.status(401).json({ error: "Senha inválida" });
     }
 
-    const payload = { id: user.id };
-    const token = jwt.sign(payload, process.env.SECRET_JWT, {
-      expiresIn: "1h", // Token válido por 1 hora
-    });
-    return res.status(200).json({ payload, token });
+    const token = jwt.sign(
+      { id: user.id, isAdmin: user.isAdmin },
+      process.env.SECRET_JWT,
+      {
+        expiresIn: "1h", // Token válido por 1 hora
+      }
+    );
+    return res
+      .status(200)
+      .json({ message: "Login realizado com sucesso", token });
   } catch (error) {
     console.error("Erro ao fazer login:", error);
     res.status(500).json({ error: "Erro interno do servidor" });
