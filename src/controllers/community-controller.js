@@ -6,7 +6,7 @@ import {
   partiallyUpdate,
   remove,
 } from "../services/community-services.js";
-import { create as createCommunityMember } from "../services/community-member-services.js";
+import { create as createCommunityMember } from "../services/member-service.js";
 
 async function createCommunity(req, res) {
   const userId = req.user.id;

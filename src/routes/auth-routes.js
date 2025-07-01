@@ -5,10 +5,17 @@ import {
   loginValidator,
   registerValidator,
 } from "../middlewares/auth-validator.js";
+import authenticateUser from "../middlewares/authenticate.js";
 
 const authRouter = express.Router();
 
-authRouter.post("/login", loginValidator, handleValidationErrors, login);
+authRouter.post(
+  "/login",
+  loginValidator,
+  handleValidationErrors,
+  login,
+  authenticateUser
+);
 authRouter.post(
   "/register",
   registerValidator,

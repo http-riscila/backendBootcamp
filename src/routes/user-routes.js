@@ -5,7 +5,6 @@ import {
   updateUser,
   partiallyUpdateUser,
   deleteUser,
-  login,
 } from "../controllers/user-controller.js";
 import authenticateUser from "../middlewares/authenticate.js";
 
@@ -16,6 +15,5 @@ usersRouter.get("/users/:id", authenticateUser, getUserById);
 usersRouter.put("/users/:id", authenticateUser, updateUser);
 usersRouter.patch("/users/:id", authenticateUser, partiallyUpdateUser);
 usersRouter.delete("/users/:id", authenticateUser, deleteUser);
-usersRouter.post("/login", login, authenticateUser);
 
 export default usersRouter;

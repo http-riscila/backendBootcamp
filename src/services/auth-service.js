@@ -1,6 +1,6 @@
-import prisma from "../config/prisma-client";
+import prisma from "../config/prisma-client.js";
 
-export default async function register(userData) {
+async function register(userData) {
   return prisma.user.create({
     data: {
       name: userData.name,
@@ -14,3 +14,5 @@ export default async function register(userData) {
     },
   });
 }
+
+export { register };

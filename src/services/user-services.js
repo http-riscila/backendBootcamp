@@ -73,4 +73,4 @@ async function remove(id) {
   });
 }
 
-export { create, getAll, getById, getByEmail, update, partiallyUpdate, remove };
+export { getAll, getById, getByEmail, update, partiallyUpdate, remove };
