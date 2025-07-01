@@ -23,6 +23,13 @@ const isDescriptionValid = body("description")
   .isLength({ min: 10, max: 500 })
   .withMessage("Description must be between 10 and 500 characters");
 
+const isStatusValid = body("status")
+  .notEmpty()
+  .withMessage("Status cannot be empty")
+  .bail()
+  .isIn(["AVAILABLE", "NOT_AVAILABLE"])
+  .withMessage("Status must be one of: AVAILABLE or NOT_AVAILABLE");
+
 const isCommunityIdValid = body("communityId")
   .notEmpty()
   .withMessage("Community ID cannot be empty");
@@ -37,7 +44,7 @@ const isCreatedByValid = body("createdBy")
 export const createItemValidator = [
   isNameValid,
   isDescriptionValid,
-  isNotEmptyString("status", "Status"),
+  isStatusValid,
   isCommunityIdValid,
   isCreatedByValid,
 ];

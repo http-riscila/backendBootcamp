@@ -26,6 +26,7 @@ model Community {
   id String @id @default(uuid())
   name String 
   description String?
+  createdBy String
 
   members CommunityMember[]
   proposals Proposal[]
@@ -36,6 +37,7 @@ model CommunityMember {
   id String @id @default(uuid())
   userId String
   communityId String
+  isAdmin Boolean @default(false)
 
   user User @relation(fields: [userId], references: [id])
   community Community @relation(fields: [communityId], references: [id])

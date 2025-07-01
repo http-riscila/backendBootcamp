@@ -1,13 +1,13 @@
 import prisma from "../config/prisma-client.js";
 
-async function create(itemData) {
+async function create(itemData, userId) {
   return prisma.item.create({
     data: {
       name: itemData.name,
       description: itemData.description,
       status: itemData.status,
       communityId: itemData.communityId,
-      createdBy: itemData.createdBy,
+      createdBy: userId,
     },
   });
 }

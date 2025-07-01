@@ -1,20 +1,5 @@
 import prisma from "../config/prisma-client.js";
 
-async function create(userData) {
-  return prisma.user.create({
-    data: {
-      name: userData.name,
-      email: userData.email,
-      password: userData.password,
-    },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-    },
-  });
-}
-
 async function getAll() {
   return prisma.user.findMany({
     select: {
@@ -88,4 +73,4 @@ async function remove(id) {
   });
 }
 
-export { create, getAll, getById, getByEmail, update, partiallyUpdate, remove };
+export { getAll, getById, getByEmail, update, partiallyUpdate, remove };

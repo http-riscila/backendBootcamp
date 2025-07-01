@@ -1,21 +1,32 @@
 import prisma from "../config/prisma-client.js";
 
-async function create(communityData) {
-  return prisma.community.create({
+async function create(communityData, userId) {
+  const newCommunity = await prisma.community.create({
     data: {
       name: communityData.name,
       description: communityData.description,
+      createdBy: userId,
     },
   });
+  return newCommunity;
 }
 
 async function getAll() {
-  return prisma.community.findMany();
+  return prisma.community.findMany({
+    select: {
+      name: true,
+      description: true,
+    },
+  });
 }
 
 async function getById(id) {
   return prisma.community.findUnique({
     where: { id },
+    include: {
+      members: true,
+      items: true,
+    },
   });
 }
 
