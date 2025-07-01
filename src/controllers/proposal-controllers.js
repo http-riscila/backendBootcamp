@@ -15,7 +15,7 @@ async function createProposal(req, res) {
   } catch (error) {
     res
       .status(500)
-      .json({ error: "Error creating a proposal", details: error.message });
+      .json({ message: "Error creating a proposal", details: error.message });
   }
 }
 
@@ -26,7 +26,7 @@ async function getAllProposals(req, res) {
   } catch (error) {
     res
       .status(500)
-      .json({ error: "Error getting proposals", details: error.message });
+      .json({ message: "Error getting proposals", details: error.message });
   }
 }
 
@@ -40,12 +40,12 @@ async function getProposalById(req, res) {
     if (proposal) {
       res.status(200).json(proposal);
     } else {
-      res.status(404).json({ error: "Proposal not found" });
+      res.status(404).json({ message: "Proposal not found" });
     }
   } catch (error) {
     res
       .status(500)
-      .json({ error: "Error getting proposal", details: error.message });
+      .json({ message: "Error getting proposal", details: error.message });
   }
 }
 
@@ -58,7 +58,7 @@ async function updateProposal(req, res) {
     const existentProposal = await getById(parsedId);
 
     if (!existentProposal) {
-      return res.status(404).json({ error: "Proposal not found" });
+      return res.status(404).json({ message: "Proposal not found" });
     }
 
     const updatedProposal = await update(parsedId, newProposalData);
@@ -66,7 +66,7 @@ async function updateProposal(req, res) {
   } catch (error) {
     res
       .status(500)
-      .json({ error: "Error updating proposal", details: error.message });
+      .json({ message: "Error updating proposal", details: error.message });
   }
 }
 
@@ -79,14 +79,14 @@ async function partiallyUpdateProposal(req, res) {
     const existentProposal = await getById(parsedId);
 
     if (!existentProposal) {
-      return res.status(404).json({ error: "Proposal not found" });
+      return res.status(404).json({ message: "Proposal not found" });
     }
 
     const updatedProposal = await partiallyUpdate(parsedId, data);
     res.status(200).json(updatedProposal);
   } catch (error) {
     res.status(500).json({
-      error: "Error partially updating proposal",
+      message: "Error partially updating proposal",
       details: error.message,
     });
   }
@@ -100,7 +100,7 @@ async function removeProposal(req, res) {
     const existentProposal = await getById(parsedId);
 
     if (!existentProposal) {
-      return res.status(404).json({ error: "Proposal not found" });
+      return res.status(404).json({ message: "Proposal not found" });
     }
 
     const deletedProposal = await remove(parsedId);
@@ -108,7 +108,7 @@ async function removeProposal(req, res) {
   } catch (error) {
     res
       .status(500)
-      .json({ error: "Error removing proposal", details: error.message });
+      .json({ message: "Error removing proposal", details: error.message });
   }
 }
 export {

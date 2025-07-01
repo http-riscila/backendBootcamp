@@ -8,7 +8,7 @@ async function registerUser(req, res) {
   try {
     const existingUser = await getByEmail(userData.email);
     if (existingUser) {
-      return res.status(400).json({ error: "Email already in use" });
+      return res.status(400).json({ message: "Email already in use" });
     }
     const hashedPassword = bcrypt.hashSync(userData.password, 10);
     const newUser = await register({
@@ -18,7 +18,7 @@ async function registerUser(req, res) {
     });
     return res.status(201).json(newUser);
   } catch (error) {
-    return res.status(500).json({ error: "Erro interno do servidor" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 }
 
@@ -28,7 +28,7 @@ async function login(req, res) {
     const user = await getByEmail(credentials.email);
 
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
     const isPasswordValid = bcrypt.compareSync(
@@ -37,7 +37,7 @@ async function login(req, res) {
     );
 
     if (!isPasswordValid) {
-      return res.status(401).json({ error: "Invalid password" });
+      return res.status(401).json({ message: "Invalid password" });
     }
 
     const token = jwt.sign(
@@ -49,9 +49,9 @@ async function login(req, res) {
     );
     return res
       .status(200)
-      .json({ message: "Login realizado com sucesso", token });
+      .json({ message: "Login completed successfully", token });
   } catch (error) {
-    res.status(500).json({ error: "Erro interno do servidor" });
+    res.status(500).json({ message: "Internal server error" });
   }
 }
 

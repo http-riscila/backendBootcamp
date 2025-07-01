@@ -25,7 +25,7 @@ async function createCommunity(req, res) {
     res.status(201).json(newCommunity);
   } catch (error) {
     res.status(400).json({
-      error: "Error creating a new community",
+      message: "Error creating a new community",
       details: error.message,
     });
   }
@@ -36,7 +36,10 @@ async function getAllCommunities(req, res) {
     const communities = await getAll();
     res.status(200).json(communities);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      message: "Error getting communities",
+      details: error.message,
+    });
   }
 }
 
@@ -48,12 +51,15 @@ async function getCommunityById(req, res) {
     const community = await getById(parsedId);
 
     if (!community) {
-      return res.status(404).json({ error: "Community not found" });
+      return res.status(404).json({ message: "Community not found" });
     }
 
     res.status(200).json(community);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      message: "Error getting community",
+      details: error.message,
+    });
   }
 }
 
@@ -69,10 +75,13 @@ async function updateCommunity(req, res) {
       const updatedCommunity = await update(parsedId, communityNewData);
       return res.status(200).json(updatedCommunity);
     } else {
-      return res.status(404).json({ error: "Community not found" });
+      return res.status(404).json({ message: "Community not found" });
     }
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({
+      message: "Error updating community",
+      details: error.message,
+    });
   }
 }
 
@@ -91,12 +100,13 @@ async function updatePartiallyCommunity(req, res) {
       );
       return res.status(200).json(updatedCommunity);
     } else {
-      return res.status(404).json({ error: "Community not found" });
+      return res.status(404).json({ message: "Community not found" });
     }
   } catch (error) {
-    res
-      .status(400)
-      .json({ error: "Error updating community", details: error.message });
+    res.status(400).json({
+      message: "Error partially updating community",
+      details: error.message,
+    });
   }
 }
 
@@ -111,12 +121,12 @@ async function deleteCommunity(req, res) {
       const deletedCommunity = await remove(parsedId);
       return res.status(204).send();
     } else {
-      return res.status(404).json({ error: "Community not found" });
+      return res.status(404).json({ message: "Community not found" });
     }
   } catch (error) {
     res
       .status(500)
-      .json({ error: "Error deleting community", details: error.message });
+      .json({ message: "Error deleting community", details: error.message });
   }
 }
 

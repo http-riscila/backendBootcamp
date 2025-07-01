@@ -6,8 +6,7 @@ async function getAllUsers(req, res) {
     const users = await userService.getAll();
     res.status(200).json(users);
   } catch (error) {
-    console.error("Erro ao buscar usuários:", error);
-    res.status(500).json({ error: "Erro interno do servidor" });
+    res.status(500).json({ message: "Internal server error" });
   }
 }
 
@@ -18,13 +17,12 @@ async function getUserById(req, res) {
     const user = await userService.getById(id);
 
     if (!user) {
-      return res.status(404).json({ error: "Usuário não encontrado" });
+      return res.status(404).json({ message: "User not found" });
     }
 
     res.status(200).json(user);
   } catch (error) {
-    console.error("Erro ao buscar usuário:", error);
-    res.status(500).json({ error: "Erro interno do servidor" });
+    res.status(500).json({ message: "Internal server error" });
   }
 }
 
@@ -37,22 +35,21 @@ async function updateUser(req, res) {
     // Verificar se o usuário existe
     const existingUser = await userService.getById(id);
     if (!existingUser) {
-      return res.status(404).json({ error: "Usuário não encontrado" });
+      return res.status(404).json({ message: "User not found" });
     }
 
     // Verificar se email já está em uso por outro usuário
     const userWithEmail = await userService.getByEmail(email);
     if (userWithEmail && userWithEmail.id !== id) {
       return res.status(400).json({
-        error: "Email já está em uso por outro usuário",
+        message: "Email already in use",
       });
     }
 
     const updatedUser = await userService.update(id, { name, email, password });
     res.status(200).json(updatedUser);
   } catch (error) {
-    console.error("Erro ao atualizar usuário:", error);
-    res.status(500).json({ error: "Erro interno do servidor" });
+    res.status(500).json({ message: "Internal server error" });
   }
 }
 
@@ -65,7 +62,7 @@ async function partiallyUpdateUser(req, res) {
     // Verificar se o usuário existe
     const existingUser = await userService.getById(id);
     if (!existingUser) {
-      return res.status(404).json({ error: "Usuário não encontrado" });
+      return res.status(404).json({ message: "User not found" });
     }
 
     // Se está atualizando email, verificar se já existe
@@ -73,7 +70,7 @@ async function partiallyUpdateUser(req, res) {
       const userWithEmail = await userService.getByEmail(updateData.email);
       if (userWithEmail && userWithEmail.id !== id) {
         return res.status(400).json({
-          error: "Email já está em uso por outro usuário",
+          message: "Email already in use",
         });
       }
     }
@@ -81,8 +78,7 @@ async function partiallyUpdateUser(req, res) {
     const updatedUser = await userService.partiallyUpdate(id, updateData);
     res.status(200).json(updatedUser);
   } catch (error) {
-    console.error("Erro ao atualizar usuário:", error);
-    res.status(500).json({ error: "Erro interno do servidor" });
+    res.status(500).json({ message: "Internal server error" });
   }
 }
 
@@ -94,14 +90,13 @@ async function deleteUser(req, res) {
     // Verificar se o usuário existe
     const existingUser = await userService.getById(id);
     if (!existingUser) {
-      return res.status(404).json({ error: "Usuário não encontrado" });
+      return res.status(404).json({ message: "User not found" });
     }
 
     const deletedUser = await userService.remove(id);
     res.status(204).send();
   } catch (error) {
-    console.error("Erro ao deletar usuário:", error);
-    res.status(500).json({ error: "Erro interno do servidor" });
+    res.status(500).json({ message: "Internal server error" });
   }
 }
 

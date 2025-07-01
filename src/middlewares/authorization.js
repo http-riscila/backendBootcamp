@@ -4,7 +4,7 @@ function authorizeAdmin(req, res, next) {
   if (!req.user.id || req.user.isAdmin) {
     return res
       .status(403)
-      .json({ error: "Acesso negado. Usuário não é administrador." });
+      .json({ message: "Access denied | User must be an admin" });
   }
   next();
 }
@@ -14,7 +14,7 @@ async function authorizeCommunityMember(req, res, next) {
   const communityId = req.params.id || req.body.communityId;
 
   if (!communityId) {
-    return res.status(400).json({ error: "ID da comunidade não fornecido." });
+    return res.status(400).json({ message: "Community ID not provided." });
   }
 
   try {
@@ -27,14 +27,11 @@ async function authorizeCommunityMember(req, res, next) {
     if (!isMember) {
       return res
         .status(403)
-        .json({ error: "Acesso negado. Usuário não é membro da comunidade." });
+        .json({ message: "Access denied. User must be a community member" });
     }
     next();
   } catch (error) {
-    console.error("Erro ao verificar membro da comunidade:", error);
-    return res
-      .status(500)
-      .json({ error: "Erro interno do servidor ao verificar membro." });
+    return res.status(500).json({ message: "Internal server error" });
   }
 }
 

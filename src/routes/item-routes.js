@@ -5,7 +5,7 @@ import {
   getItemById,
   updateItem,
   partiallyUpdateItem,
-  removeItem,
+  deleteItem,
 } from "../controllers/item-controllers.js";
 import handleValidationErrors from "../middlewares/validation.js";
 import {
@@ -59,7 +59,7 @@ itemsRouter.delete(
   "/items/:id",
   authenticateUser,
   authorizeCommunityMember,
-  removeItem
+  deleteItem
 );
 
 export default itemsRouter;
