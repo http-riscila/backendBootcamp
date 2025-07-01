@@ -44,7 +44,7 @@ const isCreatedByValid = body("createdBy")
 export const createItemValidator = [
   isNameValid,
   isDescriptionValid,
-  isNotEmptyString("status", "Status"),
+  isStatusValid,
   isCommunityIdValid,
   isCreatedByValid,
 ];
