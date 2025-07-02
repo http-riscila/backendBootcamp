@@ -34,9 +34,8 @@ async function getAllItems(req, res) {
 async function getItemById(req, res) {
   try {
     const { id } = req.params;
-    const parsedId = Number(id);
 
-    const item = await getById(parsedId);
+    const item = await getById(id);
 
     if (item) {
       return res.status(200).json(item);
@@ -54,14 +53,13 @@ async function getItemById(req, res) {
 async function updateItem(req, res) {
   try {
     const { id } = req.params;
-    const parsedId = Number(id);
 
     const newItemData = req.body;
 
-    const existentItem = await getById(parsedId);
+    const existentItem = await getById(id);
 
     if (existentItem) {
-      const updatedItem = await update(parsedId, newItemData);
+      const updatedItem = await update(id, newItemData);
       return res.status(200).json(updatedItem);
     } else {
       return res.status(404).json({ message: "Item not found" });
@@ -76,37 +74,33 @@ async function updateItem(req, res) {
 async function partiallyUpdateItem(req, res) {
   try {
     const { id } = req.params;
-    const parsedId = Number(id);
 
     const data = req.body;
 
-    const existentItem = await getById(parsedId);
+    const existentItem = await getById(id);
 
     if (existentItem) {
-      const partiallyUpdatedItem = await partiallyUpdate(parsedId, data);
+      const partiallyUpdatedItem = await partiallyUpdate(id, data);
       return res.status(200).json(partiallyUpdatedItem);
     } else {
       return res.status(404).json({ message: "Item not found" });
     }
   } catch (error) {
-    return res
-      .status(500)
-      .json({
-        message: "Error partially updating item",
-        details: error.message,
-      });
+    return res.status(500).json({
+      message: "Error partially updating item",
+      details: error.message,
+    });
   }
 }
 
 async function deleteItem(req, res) {
   try {
     const { id } = req.params;
-    const parsedId = Number(id);
 
-    const existentItem = await getById(parsedId);
+    const existentItem = await getById(id);
 
     if (existentItem) {
-      const removedItem = await remove(parsedId);
+      const removedItem = await remove(id);
       return res.status(204).send();
     } else {
       return res.status(404).json({ message: "Item not found" });

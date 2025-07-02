@@ -34,19 +34,11 @@ const isCommunityIdValid = body("communityId")
   .notEmpty()
   .withMessage("Community ID cannot be empty");
 
-const isCreatedByValid = body("createdBy")
-  .notEmpty()
-  .withMessage("Created By cannot be empty")
-  .bail()
-  .isString()
-  .withMessage("Created By must be a string");
-
 export const createItemValidator = [
   isNameValid,
   isDescriptionValid,
   isStatusValid,
   isCommunityIdValid,
-  isCreatedByValid,
 ];
 
 export const updateItemValidator = [
