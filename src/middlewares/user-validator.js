@@ -1,26 +1,28 @@
-function validateUserData(req, res, next) {
-  const { name, email, password } = req.body;
-  const errors = [];
+import { body } from "express-validator";
 
-  // Validar nome
-  if (!name || name.trim().length < 2) {
-    errors.push("Nome deve ter pelo menos 2 caracteres");
-  }
+// Validador para atualização de usuário
+export const validateUpdateUser = [
+  body("name")
+    .optional()
+    .isLength({ min: 2, max: 100 })
+    .withMessage("Name must be between 3 and 50 characters long")
+    .trim(),
 
-  // Validar email
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!email || !emailRegex.test(email)) {
-    errors.push("Email deve ter um formato válido");
-  }
+  body("email")
+    .optional()
+    .isEmail()
+    .withMessage("Invalid email format")
+    .normalizeEmail(),
 
-  // Validar senha (apenas se estiver presente)
-  if (password !== undefined && password.length < 6) {
-    errors.push("Senha deve ter pelo menos 6 caracteres");
-  }
+  body("password")
+    .optional()
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters long")
+    .bail()
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage(
+      "Password must include at least: 1 lowercase letter, 1 uppercase letter and a number"
+    ),
+];
 
-  if (errors.length > 0) {
-    return res.status(400).json({ errors });
-  }
-
-  next();
-}
+export const validatePartialUpdateUser = validateUpdateUser;
