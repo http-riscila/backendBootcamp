@@ -7,55 +7,36 @@ import {
   updatePartiallyMember,
   deleteMember,
 } from "../controllers/member-controller.js";
-
 import authenticateUser from "../middlewares/authenticate.js";
 import authorization from "../middlewares/authorization.js";
-const { authorizeCommunityMember, authorizeAdmin } = authorization;
-
 import {
   createMemberValidator,
   updateMemberValidator,
-} from "../validators/membroValidator.js";
+} from "../middlewares/member-validator.js";
+import handleValidationErrors from "../middlewares/validation.js";
 
-import { validationResult } from "express-validator";
+const { authorizeCommunityMember, authorizeAdmin } = authorization;
 
 const membersRouter = express.Router();
-
-const validateRequest = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  next();
-};
 
 membersRouter.post(
   "/members",
   authenticateUser,
   createMemberValidator,
-  validateRequest,
+  handleValidationErrors,
   createMember
 );
 
-membersRouter.get(
-  "/members",
-  authenticateUser,
-  authorizeAdmin,
-  getAllMembers
-);
+membersRouter.get("/members", authenticateUser, authorizeAdmin, getAllMembers);
 
-membersRouter.get(
-  "/members/:id",
-  authenticateUser,
-  getMemberById
-);
+membersRouter.get("/members/:id", authenticateUser, getMemberById);
 
 membersRouter.put(
   "/members/:id",
   authenticateUser,
   authorizeCommunityMember,
   updateMemberValidator,
-  validateRequest,
+  handleValidationErrors,
   updateMember
 );
 
@@ -64,7 +45,7 @@ membersRouter.patch(
   authenticateUser,
   authorizeCommunityMember,
   updateMemberValidator,
-  validateRequest,
+  handleValidationErrors,
   updatePartiallyMember
 );
 
