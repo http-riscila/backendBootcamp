@@ -5,6 +5,7 @@ async function create(memberData) {
     data: {
       userId: memberData.userId,
       communityId: memberData.communityId,
+      isAdmin: memberData.isAdmin || false,
     },
   });
 }

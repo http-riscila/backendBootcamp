@@ -1,7 +1,7 @@
 import prisma from "../config/prisma-client.js";
 
 async function create(itemData, userId) {
-  return prisma.item.create({
+  return await prisma.item.create({
     data: {
       name: itemData.name,
       description: itemData.description,
@@ -24,6 +24,9 @@ async function getById(id) {
 }
 
 async function update(id, newItemData) {
+  if (!newItemData) {
+    throw new Error("Parâmetro 'newItemData' está indefinido");
+  }
   return prisma.item.update({
     where: { id },
     data: {

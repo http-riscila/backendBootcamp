@@ -6,22 +6,12 @@ import {
   partiallyUpdate,
   remove,
 } from "../services/community-services.js";
-import { create as createCommunityMember } from "../services/member-service.js";
 
 async function createCommunity(req, res) {
   const userId = req.user.id;
   const communityData = req.body;
   try {
     const newCommunity = await create(communityData, userId);
-    if (newCommunity) {
-      const communityMember = await createCommunityMember({
-        data: {
-          userId: userId,
-          communityId: newCommunity.id,
-          isAdmin: true,
-        },
-      });
-    }
     res.status(201).json(newCommunity);
   } catch (error) {
     res.status(400).json({

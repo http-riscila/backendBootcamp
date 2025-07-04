@@ -54,6 +54,7 @@ async function getAllItems(req, res) {
 async function getItemById(req, res) {
   try {
     const { id } = req.params;
+    
     const item = await getById(id);
 
     if (item) {

@@ -11,7 +11,8 @@ function authorizeAdmin(req, res, next) {
 
 async function authorizeCommunityMember(req, res, next) {
   const userId = req.user.id;
-  const communityId = req.params.id || req.body.communityId;
+  const communityId =
+    req.body?.communityId || req.query.communityId || req.params.communityId;
 
   if (!communityId) {
     return res.status(400).json({ message: "Community ID not provided." });

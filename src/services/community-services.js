@@ -1,4 +1,5 @@
 import prisma from "../config/prisma-client.js";
+import { create as createCommunityMember } from "../services/member-service.js";
 
 async function create(communityData, userId) {
   const newCommunity = await prisma.community.create({
@@ -7,6 +8,12 @@ async function create(communityData, userId) {
       description: communityData.description,
       createdBy: userId,
     },
+  });
+
+  await createCommunityMember({
+    userId: userId,
+    communityId: newCommunity.id,
+    isAdmin: true,
   });
   return newCommunity;
 }
