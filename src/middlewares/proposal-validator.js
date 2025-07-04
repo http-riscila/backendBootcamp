@@ -1,49 +1,30 @@
 import { body } from "express-validator";
 
-const isDesiredItemIdValid = body("desiredItemId")
-  .notEmpty()
-  .withMessage("Desired Item ID cannot be empty")
-  .bail()
-  .isString()
-  .withMessage("Desired Item ID must be a string");
+const isNotEmptyString = (field, label) =>
+  body(field)
+    .notEmpty()
+    .withMessage(`${label} cannot be empty`)
+    .bail()
+    .isString()
+    .withMessage(`${label} must be a string`);
 
-const isOfferedItemIdValid = body("offeredItemId")
-  .notEmpty()
-  .withMessage("Offered Item ID cannot be empty")
-  .bail()
-  .isString()
-  .withMessage("Offered Item ID must be a string");
+const isDesiredItemIdValid = isNotEmptyString(desiredItemId, "Desired Item ID");
+
+const isOfferedItemIdValid = isNotEmptyString(offeredItemId, "Offered Item ID");
 
 const isProposalDateValid = body("proposalDate")
-  .optional()
-  .isISO8601()
-  .withMessage("Proposal date must be a valid ISO8601 date");
+  .notEmpty()
+  .withMessage("Proposal date cannot be empty");
 
 const isStatusValid = body("status")
-  .optional()
-  .isIn(["PENDING", "ACCEPTED", "REJECTED", "CANCELLED"])
-  .withMessage("Status must be one of: PENDING, ACCEPTED, REJECTED, CANCELLED");
+  .isIn(["PENDING", "ACCEPTED", "REJECTED"])
+  .withMessage("Status must be one of: PENDING, ACCEPTED, REJECTED");
 
-const isSenderIdValid = body("senderId")
-  .notEmpty()
-  .withMessage("Sender ID cannot be empty")
-  .bail()
-  .isString()
-  .withMessage("Sender ID must be a string");
+const isSenderIdValid = isNotEmptyString("senderId", "Sender ID");
 
-const isRecipientIdValid = body("recipientId")
-  .notEmpty()
-  .withMessage("Recipient ID cannot be empty")
-  .bail()
-  .isString()
-  .withMessage("Recipient ID must be a string");
+const isRecipientIdValid = isNotEmptyString("recipientId", "Recipient ID");
 
-const isCommunityIdValid = body("communityId")
-  .notEmpty()
-  .withMessage("Community ID cannot be empty")
-  .bail()
-  .isString()
-  .withMessage("Community ID must be a string");
+const isCommunityIdValid = isNotEmptyString("communityId", "Community ID");
 
 export const createProposalValidator = [
   isDesiredItemIdValid,
@@ -70,8 +51,8 @@ export const updateProposalValidator = [
     .withMessage("Proposal date must be a valid ISO8601 date"),
   body("status")
     .optional()
-    .isIn(["PENDING", "ACCEPTED", "REJECTED", "CANCELLED"])
-    .withMessage("Status must be one of: PENDING, ACCEPTED, REJECTED, CANCELLED"),
+    .isIn(["PENDING", "ACCEPTED", "REJECTED"])
+    .withMessage("Status must be one of: PENDING, ACCEPTED, REJECTED"),
   body("senderId")
     .optional()
     .isString()
