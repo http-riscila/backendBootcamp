@@ -20,40 +20,47 @@ model User {
 }
 
 model Community {
-  id          String            @id @default(uuid())
-  name        String
-  description String?
-  createdBy   String
+  id            String    @id @default(uuid())
+  name          String
+  description   String?
+  createdBy     String
 
-  members     CommunityMember[]
-  items       Item[]
-  proposals   Proposal[]
+  members       CommunityMember[]
+  items         Item[]
+  proposals     Proposal[]
 }
 
 model CommunityMember {
-  id          String    @id @default(uuid())
-  userId      String
-  communityId String
-  isAdmin     Boolean   @default(false)
+  id            String    @id @default(uuid())
+  userId        String
+  communityId   String
+  isAdmin       Boolean   @default(false)
 
-  community   Community @relation(fields: [communityId], references: [id])
-  user        User      @relation(fields: [userId], references: [id])
+  community     Community @relation(fields: [communityId], references: [id])
+  user          User      @relation(fields: [userId], references: [id])
 }
 
 model Item {
-  id String @id @default(uuid())
-  name String
-  description String?
-  status ItemStatus
-  communityId String
-  createdBy String
-  imageUrl String?
+  id            String    @id @default(uuid())
+  name          String
+  description   String?
+  categoryId    String
+  status        ItemStatus
+  communityId   String
+  createdBy     String
+  imageUrl      String?
 
-  community Community @relation(fields: [communityId], references: [id])
-  creator User @relation("CreatedBy", fields: [createdBy], references: [id])
+  category      ItemCategory @relation(fields: [categoryId], references: [id])
+  community     Community @relation(fields: [communityId], references: [id])
+  creator       User      @relation("CreatedBy", fields: [createdBy], references: [id])
 
   desiredProposals Proposal[] @relation("DesiredItem")
   OfferedProposals Proposal[] @relation("OfferedItem")
+}
+
+model ItemCategory {
+  id            String    @id @default(uuid())
+  name          String    @unique
 }
 
 model Proposal {
