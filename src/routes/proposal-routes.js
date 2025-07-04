@@ -22,9 +22,9 @@ const proposalsRouter = express.Router();
 proposalsRouter.post(
   "/proposals",
   authenticateUser,
+  authorizeCommunityMember,
   createProposalValidator,
   handleValidationErrors,
-  authorizeCommunityMember,
   createProposal
 );
 proposalsRouter.get(
