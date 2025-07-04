@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://postgres:221091@localhost:5432/meu_projeto"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -12,6 +12,7 @@ model User {
   name             String
   email            String            @unique
   password         String
+
   communityMember  CommunityMember[]
   creator          Item[]            @relation("CreatedBy")
   receivedProposal Proposal[]        @relation("ProposalRecipient")
@@ -23,6 +24,7 @@ model Community {
   name        String
   description String?
   createdBy   String
+
   members     CommunityMember[]
   items       Item[]
   proposals   Proposal[]
@@ -33,19 +35,23 @@ model CommunityMember {
   userId      String
   communityId String
   isAdmin     Boolean   @default(false)
+
   community   Community @relation(fields: [communityId], references: [id])
   user        User      @relation(fields: [userId], references: [id])
 }
 
 model Item {
-  id               String     @id @default(uuid())
-  communityId      String
-  createdBy        String
-  description      String?
-  name             String
-  status           ItemStatus
-  community        Community  @relation(fields: [communityId], references: [id])
-  creator          User       @relation("CreatedBy", fields: [createdBy], references: [id])
+  id String @id @default(uuid())
+  name String
+  description String?
+  status ItemStatus
+  communityId String
+  createdBy String
+  imageUrl String?
+
+  community Community @relation(fields: [communityId], references: [id])
+  creator User @relation("CreatedBy", fields: [createdBy], references: [id])
+
   desiredProposals Proposal[] @relation("DesiredItem")
   OfferedProposals Proposal[] @relation("OfferedItem")
 }
@@ -59,6 +65,7 @@ model Proposal {
   senderId      String
   recipientId   String
   communityId   String
+
   community     Community      @relation(fields: [communityId], references: [id])
   desiredItem   Item           @relation("DesiredItem", fields: [desiredItemId], references: [id])
   offeredItem   Item           @relation("OfferedItem", fields: [offeredItemId], references: [id])
