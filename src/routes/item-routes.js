@@ -15,6 +15,7 @@ import {
 } from "../middlewares/item-validator.js";
 import authenticateUser from "../middlewares/authenticate.js";
 import authorization from "../middlewares/authorization.js";
+import uploadMiddleware from "../middlewares/uploadMiddleware.js";
 
 const { authorizeCommunityMember } = authorization;
 const itemsRouter = express.Router();
@@ -23,6 +24,7 @@ itemsRouter.post(
   "/items",
   authenticateUser,
   authorizeCommunityMember,
+  uploadMiddleware,
   createItemValidator,
   handleValidationErrors,
   createItem
@@ -43,6 +45,7 @@ itemsRouter.put(
   "/items/:id",
   authenticateUser,
   authorizeCommunityMember,
+  uploadMiddleware,
   updateItemValidator,
   handleValidationErrors,
   updateItem
@@ -51,6 +54,7 @@ itemsRouter.patch(
   "/items/:id",
   authenticateUser,
   authorizeCommunityMember,
+  uploadMiddleware,
   partiallyUpdateItemValidator,
   handleValidationErrors,
   partiallyUpdateItem
