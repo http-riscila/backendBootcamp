@@ -9,49 +9,54 @@ import {
 } from "../controllers/proposal-controllers.js";
 import authenticateUser from "../middlewares/authenticate.js";
 import authorization from "../middlewares/authorization.js";
-import authenticateProposal from "../middlewares/authenticate-proposal.js";
+import {
+  createProposalValidator,
+  updateProposalValidator,
+  partiallyUpdateProposalValidator,
+} from "../middlewares/proposal-validator.js";
+import handleValidationErrors from "../middlewares/validation.js";
 
 const { authorizeCommunityMember } = authorization;
 const proposalsRouter = express.Router();
 
 proposalsRouter.post(
   "/proposals",
-  authenticateProposal,
   authenticateUser,
+  createProposalValidator,
+  handleValidationErrors,
   authorizeCommunityMember,
   createProposal
 );
 proposalsRouter.get(
   "/proposals",
-  authenticateProposal,
   authenticateUser,
   authorizeCommunityMember,
   getAllProposals
 );
 proposalsRouter.get(
   "/proposals/:id",
-  authenticateProposal,
   authenticateUser,
   authorizeCommunityMember,
   getProposalById
 );
 proposalsRouter.put(
   "/proposals/:id",
-  authenticateProposal,
   authenticateUser,
   authorizeCommunityMember,
+  updateProposalValidator,
+  handleValidationErrors,
   updateProposal
 );
 proposalsRouter.patch(
   "/proposals/:id",
-  authenticateProposal,
   authenticateUser,
   authorizeCommunityMember,
+  partiallyUpdateProposalValidator,
+  handleValidationErrors,
   partiallyUpdateProposal
 );
 proposalsRouter.delete(
   "/proposals/:id",
-  authenticateProposal,
   authenticateUser,
   authorizeCommunityMember,
   removeProposal
