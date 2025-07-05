@@ -44,23 +44,17 @@ model Item {
   id            String    @id @default(uuid())
   name          String
   description   String?
-  categoryId    String
+  category      ItemCategory
   status        ItemStatus
   communityId   String
   createdBy     String
   imageUrl      String?
 
-  category      ItemCategory @relation(fields: [categoryId], references: [id])
   community     Community @relation(fields: [communityId], references: [id])
   creator       User      @relation("CreatedBy", fields: [createdBy], references: [id])
 
   desiredProposals Proposal[] @relation("DesiredItem")
   OfferedProposals Proposal[] @relation("OfferedItem")
-}
-
-model ItemCategory {
-  id            String    @id @default(uuid())
-  name          String    @unique
 }
 
 model Proposal {
@@ -89,4 +83,28 @@ enum ProposalStatus {
 enum ItemStatus {
   AVAILABLE
   NOT_AVAILABLE
+}
+
+enum ItemCategory {
+  BOOKS
+  ELECTRONICS
+  CLOTHING
+  TOYS
+  HOME_APPLIANCES
+  FURNITURE
+  SPORTS
+  MUSICAL_INSTRUMENTS
+  TOOLS
+  ART_SUPPLIES
+  STATIONERY
+  GAMES
+  GARDENING
+  VEHICLE_ACCESSORIES
+  PET_SUPPLIES
+  FOOD
+  HEALTH
+  BEAUTY
+  BABY_ITEMS
+  COLLECTIBLES
+  OTHER
 }
