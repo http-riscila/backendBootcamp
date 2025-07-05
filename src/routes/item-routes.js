@@ -3,6 +3,7 @@ import {
   createItem,
   getAllItems,
   getItemById,
+  getItemsByCategory,
   updateItem,
   partiallyUpdateItem,
   deleteItem,
@@ -40,6 +41,12 @@ itemsRouter.get(
   authenticateUser,
   authorizeCommunityMember,
   getItemById
+);
+itemsRouter.get(
+  "/items",
+  authenticateUser,
+  authorizeCommunityMember,
+  getItemsByCategory
 );
 itemsRouter.put(
   "/items/:id",

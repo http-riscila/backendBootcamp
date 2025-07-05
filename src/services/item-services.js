@@ -24,6 +24,12 @@ async function getById(id) {
   });
 }
 
+async function getByCategory(category) {
+  return prisma.item.findMany({
+    where: { category },
+  });
+}
+
 async function update(id, newItemData) {
   if (!newItemData) {
     throw new Error("New item data is required for update");
@@ -55,4 +61,12 @@ async function remove(id) {
   });
 }
 
-export { create, getAll, getById, update, partiallyUpdate, remove };
+export {
+  create,
+  getAll,
+  getById,
+  getByCategory,
+  update,
+  partiallyUpdate,
+  remove,
+};

@@ -3,6 +3,7 @@ import {
   create,
   getAll,
   getById,
+  getByCategory,
   update,
   partiallyUpdate,
   remove,
@@ -54,7 +55,7 @@ async function getAllItems(req, res) {
 async function getItemById(req, res) {
   try {
     const { id } = req.params;
-    
+
     const item = await getById(id);
 
     if (item) {
@@ -63,12 +64,28 @@ async function getItemById(req, res) {
       return res.status(404).json({ message: "Item not found" });
     }
   } catch (error) {
-    console.error({
+    return res.status(500).json({
       message: "Error getting item by ID",
       details: error.message,
     });
+  }
+}
+
+async function getItemsByCategory(req, res) {
+  try {
+    const { category } = req.query;
+
+    const items = await getByCategory(category);
+    if (items.length > 0) {
+      return res.status(200).json(items);
+    } else {
+      return res
+        .status(404)
+        .json({ message: "No items found for this category" });
+    }
+  } catch (error) {
     return res.status(500).json({
-      message: "Error getting item by ID",
+      message: "Error getting items by category",
       details: error.message,
     });
   }
@@ -168,6 +185,7 @@ export {
   createItem,
   getAllItems,
   getItemById,
+  getItemsByCategory,
   updateItem,
   partiallyUpdateItem,
   deleteItem,
