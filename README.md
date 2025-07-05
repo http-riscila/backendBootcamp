@@ -5,7 +5,7 @@ Uma API RESTful para facilitar trocas de itens entre membros de comunidades, pro
 ## 📚 Sumário
 
 - [📦 Sobre o Projeto](#-sobre-o-projeto)
-- [⚙️ Instalação](#-instalação)
+- [⚙️ Instalação](#instalação)
 
 ---
 
