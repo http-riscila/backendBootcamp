@@ -50,10 +50,7 @@ export const updateItemValidator = [
     .bail()
     .isString()
     .withMessage("Name must be a string"),
-  body("description")
-    .optional()
-    .isLength({ min: 10, max: 500 })
-    .withMessage("Description must be between 10 and 500 characters"),
+  isDescriptionValid,
   body("categoryId")
     .optional()
     .isString()
