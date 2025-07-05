@@ -5,8 +5,9 @@ async function create(itemData, userId) {
     data: {
       name: itemData.name,
       description: itemData.description,
+      categoryId: itemData.categoryId,
       status: itemData.status,
-      imageUrl:itemData.imageUrl,
+      imageUrl: itemData.imageUrl,
       communityId: itemData.communityId,
       createdBy: userId,
     },
@@ -25,13 +26,14 @@ async function getById(id) {
 
 async function update(id, newItemData) {
   if (!newItemData) {
-    throw new Error("Parâmetro 'newItemData' está indefinido");
+    throw new Error("New item data is required for update");
   }
   return prisma.item.update({
     where: { id },
     data: {
       name: newItemData.name,
       description: newItemData.description,
+      categoryId: newItemData.categoryId,
       status: newItemData.status,
       imageUrl: newItemData.imageUrl,
       communityId: newItemData.communityId,

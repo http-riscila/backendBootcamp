@@ -23,6 +23,8 @@ const isDescriptionValid = body("description")
   .isLength({ min: 10, max: 500 })
   .withMessage("Description must be between 10 and 500 characters");
 
+const isCategoryIdValid = isNotEmptyString("categoryId", "Category ID");
+
 const isStatusValid = body("status")
   .notEmpty()
   .withMessage("Status cannot be empty")
@@ -30,13 +32,12 @@ const isStatusValid = body("status")
   .isIn(["AVAILABLE", "NOT_AVAILABLE"])
   .withMessage("Status must be one of: AVAILABLE or NOT_AVAILABLE");
 
-const isCommunityIdValid = body("communityId")
-  .notEmpty()
-  .withMessage("Community ID cannot be empty");
+const isCommunityIdValid = isNotEmptyString("communityId", "Community ID");
 
 export const createItemValidator = [
   isNameValid,
   isDescriptionValid,
+  isCategoryIdValid,
   isStatusValid,
   isCommunityIdValid,
 ];
@@ -50,6 +51,10 @@ export const updateItemValidator = [
     .isString()
     .withMessage("Name must be a string"),
   isDescriptionValid,
+  body("categoryId")
+    .optional()
+    .isString()
+    .withMessage("Category ID must be a string"),
 ];
 
 export const partiallyUpdateItemValidator = updateItemValidator;
