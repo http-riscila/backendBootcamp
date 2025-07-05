@@ -1,12 +1,4 @@
-import { body, param } from "express-validator";
-
-const isNotEmptyString = (field, label) =>
-  body(field)
-    .notEmpty()
-    .withMessage(`${label} cannot be empty`)
-    .bail()
-    .isString()
-    .withMessage(`${label} must be a string`);
+import { body } from "express-validator";
 
 const isNameValid = body("name")
   .notEmpty()
@@ -26,26 +18,9 @@ const isDescriptionValid = body("description")
   .isString()
   .withMessage("Description must be a string");
 
-const isCommunityIdParamValid = param("id")
-  .notEmpty()
-  .withMessage("Community ID is required")
-  .bail()
-  .isUUID()
-  .withMessage("Community ID must be a valid UUID");
-
-export const createCommunityValidator = [
-  isNameValid,
-  isDescriptionValid,
-];
+export const createCommunityValidator = [isNameValid, isDescriptionValid];
 
 export const updateCommunityValidator = [
-  isCommunityIdParamValid,
-  isNameValid,
-  isDescriptionValid,
-];
-
-export const partiallyUpdateCommunityValidator = [
-  isCommunityIdParamValid,
   body("name")
     .optional()
     .isLength({ min: 3, max: 50 })
@@ -56,4 +31,4 @@ export const partiallyUpdateCommunityValidator = [
   isDescriptionValid,
 ];
 
-export const idParamValidator = [isCommunityIdParamValid];
+export const partiallyUpdateCommunityValidator = updateCommunityValidator;
