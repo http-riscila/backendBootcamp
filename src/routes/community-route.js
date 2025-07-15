@@ -11,13 +11,12 @@ import {
 
 import authenticateUser from "../middlewares/authenticate.js";
 import authorization from "../middlewares/authorization.js";
-import handleValidationErrors from "../middlewares/handleValidationErrors.js";
+import handleValidationErrors from "../middlewares/validation.js";
 
 import {
   createCommunityValidator,
   updateCommunityValidator,
   partiallyUpdateCommunityValidator,
-  idParamValidator,
 } from "../middlewares/community-validator.js";
 
 const { authorizeCommunityMember, authorizeAdmin } = authorization;
@@ -32,17 +31,12 @@ communityRouter.post(
   createCommunity
 );
 
-communityRouter.get(
-  "/communities",
-  authenticateUser,
-  getAllCommunities
-);
+communityRouter.get("/communities", authenticateUser, getAllCommunities);
 
 communityRouter.get(
   "/communities/:id",
   authenticateUser,
   authorizeCommunityMember,
-  idParamValidator,
   handleValidationErrors,
   getCommunityById
 );
@@ -69,7 +63,6 @@ communityRouter.delete(
   "/communities/:id",
   authenticateUser,
   authorizeAdmin,
-  idParamValidator,
   handleValidationErrors,
   deleteCommunity
 );
