@@ -1,4 +1,5 @@
 import prisma from "../config/prisma-client.js";
+import { uploadImage, deleteImage } from "../utils/upload-utils.js";
 
 async function getAll() {
   return prisma.user.findMany({
@@ -6,6 +7,7 @@ async function getAll() {
       id: true,
       name: true,
       email: true,
+      profileImageUrl: true,
     },
   });
 }
@@ -17,6 +19,7 @@ async function getById(id) {
       id: true,
       name: true,
       email: true,
+      profileImageUrl: true,
     },
   });
 }
@@ -39,17 +42,15 @@ async function update(id, newUserData) {
       id: true,
       name: true,
       email: true,
+      profileImageUrl: true,
     },
   });
 }
 
 async function partiallyUpdate(id, data) {
-  // Remove senha do objeto se estiver presente e não for para atualização
   const { password, ...safeData } = data;
 
-  const updateData = password
-    ? { ...safeData, password } // Em produção, hashear a senha
-    : safeData;
+  const updateData = password ? { ...safeData, password } : safeData;
 
   return prisma.user.update({
     where: { id },
@@ -58,19 +59,90 @@ async function partiallyUpdate(id, data) {
       id: true,
       name: true,
       email: true,
+      profileImageUrl: true,
     },
   });
 }
 
 async function remove(id) {
+  const user = await prisma.user.findUnique({
+    where: { id },
+    select: { profileImageUrl: true },
+  });
+
+  if (user?.profileImageUrl) {
+    await deleteImage(user.profileImageUrl);
+  }
+
   return prisma.user.delete({
     where: { id },
     select: {
       id: true,
       name: true,
       email: true,
+      profileImageUrl: true,
     },
   });
 }
 
-export { getAll, getById, getByEmail, update, partiallyUpdate, remove };
+async function updateProfileImage(userId, imageBuffer) {
+  const currentUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { profileImageUrl: true },
+  });
+
+  if (currentUser?.profileImageUrl) {
+    await deleteImage(currentUser.profileImageUrl);
+  }
+
+  const imageUrl = await uploadImage(imageBuffer, "users", `user_${userId}`);
+
+  return prisma.user.update({
+    where: { id: userId },
+    data: { profileImageUrl: imageUrl },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      profileImageUrl: true,
+    },
+  });
+}
+
+/**
+ * Remove a foto de perfil do usuário
+ * @param {string} userId - ID do usuário
+ * @returns {Promise<Object>} - Usuário atualizado
+ */
+async function removeProfileImage(userId) {
+  const currentUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { profileImageUrl: true },
+  });
+
+  if (currentUser?.profileImageUrl) {
+    await deleteImage(currentUser.profileImageUrl);
+  }
+
+  return prisma.user.update({
+    where: { id: userId },
+    data: { profileImageUrl: null },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      profileImageUrl: true,
+    },
+  });
+}
+
+export {
+  getAll,
+  getById,
+  getByEmail,
+  update,
+  partiallyUpdate,
+  remove,
+  updateProfileImage,
+  removeProfileImage,
+};
