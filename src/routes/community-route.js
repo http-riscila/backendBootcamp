@@ -7,11 +7,14 @@ import {
   updateCommunity,
   updatePartiallyCommunity,
   deleteCommunity,
+  updateCommunityImageController,
+  removeCommunityImageController,
 } from "../controllers/community-controller.js";
 
 import authenticateUser from "../middlewares/authenticate.js";
 import authorization from "../middlewares/authorization.js";
 import handleValidationErrors from "../middlewares/validation.js";
+import communityImageUploadMiddleware from "../middlewares/communityImageUploadMiddleware.js";
 
 import {
   createCommunityValidator,
@@ -65,6 +68,26 @@ communityRouter.delete(
   authorizeAdmin,
   handleValidationErrors,
   deleteCommunity
+);
+
+// Rotas para upload de imagem da comunidade
+communityRouter.post(
+  "/communities/:id/image",
+  authenticateUser,
+  authorizeAdmin,
+  idParamValidator,
+  handleValidationErrors,
+  communityImageUploadMiddleware,
+  updateCommunityImageController
+);
+
+communityRouter.delete(
+  "/communities/:id/image",
+  authenticateUser,
+  authorizeAdmin,
+  idParamValidator,
+  handleValidationErrors,
+  removeCommunityImageController
 );
 
 export default communityRouter;

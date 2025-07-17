@@ -12,6 +12,7 @@ model User {
   name             String
   email            String            @unique
   password         String
+  profileImageUrl  String?
 
   communityMember  CommunityMember[]
   creator          Item[]            @relation("CreatedBy")
@@ -24,6 +25,7 @@ model Community {
   name          String
   description   String?
   createdBy     String
+  imageUrl      String?
 
   members       CommunityMember[]
   items         Item[]

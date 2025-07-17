@@ -1,6 +1,5 @@
 import * as userService from "../services/user-services.js";
 
-// Buscar todos os usuários
 async function getAllUsers(req, res) {
   try {
     const users = await userService.getAll();
@@ -10,7 +9,6 @@ async function getAllUsers(req, res) {
   }
 }
 
-// Buscar usuário por ID
 async function getUserById(req, res) {
   try {
     const { id } = req.params;
@@ -26,19 +24,16 @@ async function getUserById(req, res) {
   }
 }
 
-// Atualizar usuário completo
 async function updateUser(req, res) {
   try {
     const { id } = req.params;
     const { name, email, password } = req.body;
 
-    // Verificar se o usuário existe
     const existingUser = await userService.getById(id);
     if (!existingUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Verificar se email já está em uso por outro usuário
     const userWithEmail = await userService.getByEmail(email);
     if (userWithEmail && userWithEmail.id !== id) {
       return res.status(400).json({
@@ -53,19 +48,16 @@ async function updateUser(req, res) {
   }
 }
 
-// Atualizar usuário parcial
 async function partiallyUpdateUser(req, res) {
   try {
     const { id } = req.params;
     const updateData = req.body;
 
-    // Verificar se o usuário existe
     const existingUser = await userService.getById(id);
     if (!existingUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Se está atualizando email, verificar se já existe
     if (updateData.email) {
       const userWithEmail = await userService.getByEmail(updateData.email);
       if (userWithEmail && userWithEmail.id !== id) {
@@ -82,12 +74,10 @@ async function partiallyUpdateUser(req, res) {
   }
 }
 
-// Deletar usuário
 async function deleteUser(req, res) {
   try {
     const { id } = req.params;
 
-    // Verificar se o usuário existe
     const existingUser = await userService.getById(id);
     if (!existingUser) {
       return res.status(404).json({ message: "User not found" });
@@ -100,10 +90,67 @@ async function deleteUser(req, res) {
   }
 }
 
+async function updateUserProfileImage(req, res) {
+  try {
+    const { id } = req.params;
+
+    const existingUser = await userService.getById(id);
+    if (!existingUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ message: "No image file provided" });
+    }
+
+    const updatedUser = await userService.updateProfileImage(
+      id,
+      req.file.buffer
+    );
+
+    res.status(200).json({
+      message: "Profile image updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Error updating profile image:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+async function removeUserProfileImage(req, res) {
+  try {
+    const { id } = req.params;
+
+    const existingUser = await userService.getById(id);
+    if (!existingUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!existingUser.profileImageUrl) {
+      return res
+        .status(400)
+        .json({ message: "User has no profile image to remove" });
+    }
+
+    const updatedUser = await userService.removeProfileImage(id);
+
+    res.status(200).json({
+      message: "Profile image removed successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Error removing profile image:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 export {
   getAllUsers,
   getUserById,
   updateUser,
   partiallyUpdateUser,
   deleteUser,
+  updateUserProfileImage,
+  removeUserProfileImage,
 };

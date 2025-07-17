@@ -5,6 +5,8 @@ import {
   update,
   partiallyUpdate,
   remove,
+  updateCommunityImage,
+  removeCommunityImage,
 } from "../services/community-services.js";
 
 async function createCommunity(req, res) {
@@ -120,6 +122,58 @@ async function deleteCommunity(req, res) {
   }
 }
 
+async function updateCommunityImageController(req, res) {
+  try {
+    const { id } = req.params;
+
+    const existingCommunity = await getById(id);
+    if (!existingCommunity) {
+      return res.status(404).json({ message: "Community not found" });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ message: "No image file provided" });
+    }
+
+    const updatedCommunity = await updateCommunityImage(id, req.file.buffer);
+
+    res.status(200).json({
+      message: "Community image updated successfully",
+      community: updatedCommunity,
+    });
+  } catch (error) {
+    console.error("Error updating community image:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+async function removeCommunityImageController(req, res) {
+  try {
+    const { id } = req.params;
+
+    const existingCommunity = await getById(id);
+    if (!existingCommunity) {
+      return res.status(404).json({ message: "Community not found" });
+    }
+
+    if (!existingCommunity.imageUrl) {
+      return res
+        .status(400)
+        .json({ message: "Community has no image to remove" });
+    }
+
+    const updatedCommunity = await removeCommunityImage(id);
+
+    res.status(200).json({
+      message: "Community image removed successfully",
+      community: updatedCommunity,
+    });
+  } catch (error) {
+    console.error("Error removing community image:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 export {
   createCommunity,
   getAllCommunities,
@@ -127,4 +181,6 @@ export {
   updateCommunity,
   updatePartiallyCommunity,
   deleteCommunity,
+  updateCommunityImageController,
+  removeCommunityImageController,
 };
