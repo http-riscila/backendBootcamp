@@ -4,6 +4,7 @@ import {
   getAll,
   getById,
   getByCategory,
+  countByStatus,
   update,
   partiallyUpdate,
   remove,
@@ -86,6 +87,19 @@ async function getItemsByCategory(req, res) {
   } catch (error) {
     return res.status(500).json({
       message: "Error getting items by category",
+      details: error.message,
+    });
+  }
+}
+
+async function countItemsByStatus(req, res) {
+  try {
+    const { userId } = req.params;
+    const availableItems = await countByStatus(userId);
+    return res.status(200).json(availableItems);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error counting items by status",
       details: error.message,
     });
   }
@@ -186,6 +200,7 @@ export {
   getAllItems,
   getItemById,
   getItemsByCategory,
+  countItemsByStatus,
   updateItem,
   partiallyUpdateItem,
   deleteItem,

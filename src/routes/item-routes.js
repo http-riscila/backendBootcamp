@@ -4,6 +4,7 @@ import {
   getAllItems,
   getItemById,
   getItemsByCategory,
+  countItemsByStatus,
   updateItem,
   partiallyUpdateItem,
   deleteItem,
@@ -47,6 +48,12 @@ itemsRouter.get(
   authenticateUser,
   authorizeCommunityMember,
   getItemsByCategory
+);
+itemsRouter.get(
+  "/items/count/available/:userId",
+  authenticateUser,
+  authorizeCommunityMember,
+  countItemsByStatus
 );
 itemsRouter.put(
   "/items/:id",

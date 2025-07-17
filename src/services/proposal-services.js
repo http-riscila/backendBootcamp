@@ -24,6 +24,15 @@ async function getById(id) {
   });
 }
 
+async function countByUser(userId) {
+  return prisma.proposal.count({
+    where: {
+      status: "ACCEPTED",
+      OR: [{ senderId: userId }, { recipientId: userId }],
+    },
+  });
+}
+
 async function update(id, newProposalData) {
   return prisma.proposal.update({
     where: { id },
@@ -51,4 +60,12 @@ async function remove(id) {
   });
 }
 
-export { create, getAll, getById, update, partiallyUpdate, remove };
+export {
+  create,
+  getAll,
+  getById,
+  countByUser,
+  update,
+  partiallyUpdate,
+  remove,
+};

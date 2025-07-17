@@ -16,7 +16,8 @@ model User {
   createdAt        DateTime          @default(now())
 
   communityMember  CommunityMember[]
-  creator          Item[]            @relation("CreatedBy")
+  createdCommunities Community[]     @relation("CreatedBy")
+  createdItems          Item[]            @relation("CreatedBy")
   receivedProposal Proposal[]        @relation("ProposalRecipient")
   sentProposal     Proposal[]        @relation("ProposalSender")
 }
@@ -27,6 +28,8 @@ model Community {
   description   String?
   createdBy     String
   imageUrl      String?
+
+  creator       User      @relation("CreatedBy", fields: [createdBy], references: [id])
 
   members       CommunityMember[]
   items         Item[]

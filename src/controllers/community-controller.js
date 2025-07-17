@@ -2,6 +2,7 @@ import {
   create,
   getAll,
   getById,
+  countByCreator,
   update,
   partiallyUpdate,
   remove,
@@ -37,10 +38,9 @@ async function getAllCommunities(req, res) {
 
 async function getCommunityById(req, res) {
   const { id } = req.params;
-  const parsedId = Number(id);
 
   try {
-    const community = await getById(parsedId);
+    const community = await getById(id);
 
     if (!community) {
       return res.status(404).json({ message: "Community not found" });
@@ -55,16 +55,29 @@ async function getCommunityById(req, res) {
   }
 }
 
+async function countCommunityByCreator(req, res) {
+  const { userId } = req.params;
+
+  try {
+    const communitiesByUser = await countByCreator(userId);
+    return res.status(200).json(communitiesByUser);
+  } catch (error) {
+    res.status(500).json({
+      message: "Error counting communities by creator",
+      details: error.message,
+    });
+  }
+}
+
 async function updateCommunity(req, res) {
   try {
     const { id } = req.params;
-    const parsedId = Number(id);
     const communityNewData = req.body;
 
-    const existentCommunity = await getById(parsedId);
+    const existentCommunity = await getById(id);
 
     if (existentCommunity) {
-      const updatedCommunity = await update(parsedId, communityNewData);
+      const updatedCommunity = await update(id, communityNewData);
       return res.status(200).json(updatedCommunity);
     } else {
       return res.status(404).json({ message: "Community not found" });
@@ -80,16 +93,12 @@ async function updateCommunity(req, res) {
 async function updatePartiallyCommunity(req, res) {
   try {
     const { id } = req.params;
-    const parsedId = Number(id);
     const communityNewData = req.body;
 
-    const existentCommunity = await getById(parsedId);
+    const existentCommunity = await getById(id);
 
     if (existentCommunity) {
-      const updatedCommunity = await partiallyUpdate(
-        parsedId,
-        communityNewData
-      );
+      const updatedCommunity = await partiallyUpdate(id, communityNewData);
       return res.status(200).json(updatedCommunity);
     } else {
       return res.status(404).json({ message: "Community not found" });
@@ -105,12 +114,11 @@ async function updatePartiallyCommunity(req, res) {
 async function deleteCommunity(req, res) {
   try {
     const { id } = req.params;
-    const parsedId = Number(id);
 
-    const existentCommunity = await getById(parsedId);
+    const existentCommunity = await getById(id);
 
     if (existentCommunity) {
-      const deletedCommunity = await remove(parsedId);
+      const deletedCommunity = await remove(id);
       return res.status(204).send();
     } else {
       return res.status(404).json({ message: "Community not found" });
@@ -178,6 +186,7 @@ export {
   createCommunity,
   getAllCommunities,
   getCommunityById,
+  countCommunityByCreator,
   updateCommunity,
   updatePartiallyCommunity,
   deleteCommunity,

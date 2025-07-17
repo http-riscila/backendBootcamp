@@ -2,6 +2,7 @@ import {
   create,
   getAll,
   getById,
+  countByUser,
   update,
   partiallyUpdate,
   remove,
@@ -33,9 +34,8 @@ async function getAllProposals(req, res) {
 async function getProposalById(req, res) {
   try {
     const { id } = req.params;
-    const parsedId = Number(id);
 
-    const proposal = await getById(parsedId);
+    const proposal = await getById(id);
 
     if (proposal) {
       res.status(200).json(proposal);
@@ -49,19 +49,32 @@ async function getProposalById(req, res) {
   }
 }
 
+async function countProposalsByUser(req, res) {
+  try {
+    const { id } = req.params;
+
+    const acceptedProposals = await countByUser(id);
+    return res.status(200).json(acceptedProposals);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error counting accepted proposals by user",
+      details: error.message,
+    });
+  }
+}
+
 async function updateProposal(req, res) {
   try {
     const { id } = req.params;
-    const parsedId = Number(id);
     const newProposalData = req.body;
 
-    const existentProposal = await getById(parsedId);
+    const existentProposal = await getById(id);
 
     if (!existentProposal) {
       return res.status(404).json({ message: "Proposal not found" });
     }
 
-    const updatedProposal = await update(parsedId, newProposalData);
+    const updatedProposal = await update(id, newProposalData);
     res.status(200).json(updatedProposal);
   } catch (error) {
     res
@@ -73,16 +86,15 @@ async function updateProposal(req, res) {
 async function partiallyUpdateProposal(req, res) {
   try {
     const { id } = req.params;
-    const parsedId = Number(id);
     const data = req.body;
 
-    const existentProposal = await getById(parsedId);
+    const existentProposal = await getById(id);
 
     if (!existentProposal) {
       return res.status(404).json({ message: "Proposal not found" });
     }
 
-    const updatedProposal = await partiallyUpdate(parsedId, data);
+    const updatedProposal = await partiallyUpdate(id, data);
     res.status(200).json(updatedProposal);
   } catch (error) {
     res.status(500).json({
@@ -95,15 +107,14 @@ async function partiallyUpdateProposal(req, res) {
 async function removeProposal(req, res) {
   try {
     const { id } = req.params;
-    const parsedId = Number(id);
 
-    const existentProposal = await getById(parsedId);
+    const existentProposal = await getById(id);
 
     if (!existentProposal) {
       return res.status(404).json({ message: "Proposal not found" });
     }
 
-    const deletedProposal = await remove(parsedId);
+    const deletedProposal = await remove(id);
     res.status(204).send();
   } catch (error) {
     res
@@ -115,6 +126,7 @@ export {
   createProposal,
   getAllProposals,
   getProposalById,
+  countProposalsByUser,
   updateProposal,
   partiallyUpdateProposal,
   removeProposal,

@@ -20,6 +20,7 @@ async function getById(id) {
       name: true,
       email: true,
       profileImageUrl: true,
+      createdAt: true,
     },
   });
 }

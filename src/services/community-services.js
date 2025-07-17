@@ -40,6 +40,12 @@ async function getById(id) {
   });
 }
 
+async function countByCreator(userId) {
+  return prisma.community.count({
+    where: { createdBy: userId },
+  });
+}
+
 async function update(id, communityNewData) {
   return prisma.community.update({
     where: { id },
@@ -82,7 +88,6 @@ async function remove(id) {
  * @returns {Promise<Object>} - Comunidade atualizada
  */
 async function updateCommunityImage(communityId, imageBuffer) {
-
   const currentCommunity = await prisma.community.findUnique({
     where: { id: communityId },
     select: { imageUrl: true },
@@ -143,6 +148,7 @@ export {
   create,
   getAll,
   getById,
+  countByCreator,
   update,
   partiallyUpdate,
   remove,

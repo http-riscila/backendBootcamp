@@ -4,6 +4,7 @@ import {
   createCommunity,
   getAllCommunities,
   getCommunityById,
+  countCommunityByCreator,
   updateCommunity,
   updatePartiallyCommunity,
   deleteCommunity,
@@ -53,6 +54,12 @@ communityRouter.put(
   updateCommunity
 );
 
+communityRouter.get(
+  "/communities/count/created-by/:userId",
+  authenticateUser,
+  countCommunityByCreator
+);
+
 communityRouter.patch(
   "/communities/:id",
   authenticateUser,
@@ -75,7 +82,6 @@ communityRouter.post(
   "/communities/:id/image",
   authenticateUser,
   authorizeAdmin,
-  idParamValidator,
   handleValidationErrors,
   communityImageUploadMiddleware,
   updateCommunityImageController
@@ -85,7 +91,6 @@ communityRouter.delete(
   "/communities/:id/image",
   authenticateUser,
   authorizeAdmin,
-  idParamValidator,
   handleValidationErrors,
   removeCommunityImageController
 );

@@ -30,6 +30,12 @@ async function getByCategory(category) {
   });
 }
 
+async function countByStatus(userId) {
+  return prisma.item.count({
+    where: { createdBy: userId, status: "AVAILABLE" },
+  });
+}
+
 async function update(id, newItemData) {
   if (!newItemData) {
     throw new Error("New item data is required for update");
@@ -66,6 +72,7 @@ export {
   getAll,
   getById,
   getByCategory,
+  countByStatus,
   update,
   partiallyUpdate,
   remove,
