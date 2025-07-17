@@ -47,9 +47,16 @@ async function login(req, res) {
         expiresIn: "1h", // Token válido por 1 hora
       }
     );
+
+    const { password, ...userWithoutPassword } = user;
+
     return res
       .status(200)
-      .json({ message: "Login completed successfully", token });
+      .json({
+        message: "Login completed successfully",
+        token,
+        user: userWithoutPassword,
+      });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }

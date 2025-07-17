@@ -8,9 +8,15 @@ const isNotEmptyString = (field, label) =>
     .isString()
     .withMessage(`${label} must be a string`);
 
-const isDesiredItemIdValid = isNotEmptyString(desiredItemId, "Desired Item ID");
+const isDesiredItemIdValid = isNotEmptyString(
+  "desiredItemId",
+  "Desired Item ID"
+);
 
-const isOfferedItemIdValid = isNotEmptyString(offeredItemId, "Offered Item ID");
+const isOfferedItemIdValid = isNotEmptyString(
+  "offeredItemId",
+  "Offered Item ID"
+);
 
 const isProposalDateValid = body("proposalDate")
   .notEmpty()

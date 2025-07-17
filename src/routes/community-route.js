@@ -40,6 +40,7 @@ communityRouter.get(
   "/communities/:id",
   authenticateUser,
   authorizeCommunityMember,
+  handleValidationErrors,
   getCommunityById
 );
 
@@ -65,7 +66,6 @@ communityRouter.delete(
   "/communities/:id",
   authenticateUser,
   authorizeAdmin,
-  idParamValidator,
   handleValidationErrors,
   deleteCommunity
 );
