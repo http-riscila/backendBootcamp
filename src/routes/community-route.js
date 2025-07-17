@@ -7,17 +7,19 @@ import {
   updateCommunity,
   updatePartiallyCommunity,
   deleteCommunity,
+  updateCommunityImageController,
+  removeCommunityImageController,
 } from "../controllers/community-controller.js";
 
 import authenticateUser from "../middlewares/authenticate.js";
 import authorization from "../middlewares/authorization.js";
-import handleValidationErrors from "../middlewares/handleValidationErrors.js";
+import handleValidationErrors from "../middlewares/validation.js";
+import communityImageUploadMiddleware from "../middlewares/communityImageUploadMiddleware.js";
 
 import {
   createCommunityValidator,
   updateCommunityValidator,
   partiallyUpdateCommunityValidator,
-  idParamValidator,
 } from "../middlewares/community-validator.js";
 
 const { authorizeCommunityMember, authorizeAdmin } = authorization;
@@ -32,18 +34,12 @@ communityRouter.post(
   createCommunity
 );
 
-communityRouter.get(
-  "/communities",
-  authenticateUser,
-  getAllCommunities
-);
+communityRouter.get("/communities", authenticateUser, getAllCommunities);
 
 communityRouter.get(
   "/communities/:id",
   authenticateUser,
   authorizeCommunityMember,
-  idParamValidator,
-  handleValidationErrors,
   getCommunityById
 );
 
@@ -72,6 +68,26 @@ communityRouter.delete(
   idParamValidator,
   handleValidationErrors,
   deleteCommunity
+);
+
+// Rotas para upload de imagem da comunidade
+communityRouter.post(
+  "/communities/:id/image",
+  authenticateUser,
+  authorizeAdmin,
+  idParamValidator,
+  handleValidationErrors,
+  communityImageUploadMiddleware,
+  updateCommunityImageController
+);
+
+communityRouter.delete(
+  "/communities/:id/image",
+  authenticateUser,
+  authorizeAdmin,
+  idParamValidator,
+  handleValidationErrors,
+  removeCommunityImageController
 );
 
 export default communityRouter;
