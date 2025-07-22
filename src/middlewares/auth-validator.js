@@ -42,4 +42,12 @@ export const registerValidator = [
     .withMessage(
       "Password must include at least: 1 lowercase letter, 1 uppercase letter and a number"
     ),
+  body("bio")
+    .optional()
+    .isLength({ min: 2, max: 100 })
+    .withMessage("Bio must be between 3 and 50 characters long")
+    .trim()
+    .bail()
+    .isString()
+    .withMessage("Bio must be a string"),
 ];

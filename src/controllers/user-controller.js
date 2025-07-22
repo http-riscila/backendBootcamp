@@ -27,7 +27,7 @@ async function getUserById(req, res) {
 async function updateUser(req, res) {
   try {
     const { id } = req.params;
-    const { name, email, password } = req.body;
+    const newUserData = req.body;
 
     const existingUser = await userService.getById(id);
     if (!existingUser) {
@@ -41,7 +41,7 @@ async function updateUser(req, res) {
       });
     }
 
-    const updatedUser = await userService.update(id, { name, email, password });
+    const updatedUser = await userService.update(id, newUserData);
     res.status(200).json(updatedUser);
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
@@ -51,15 +51,24 @@ async function updateUser(req, res) {
 async function partiallyUpdateUser(req, res) {
   try {
     const { id } = req.params;
-    const updateData = req.body;
+    const newUserData = req.body;
+
+    Object.keys(newUserData).forEach((key) => {
+      if (
+        typeof newUserData[key] === "string" &&
+        newUserData[key].trim() === ""
+      ) {
+        delete newUserData[key];
+      }
+    });
 
     const existingUser = await userService.getById(id);
     if (!existingUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (updateData.email) {
-      const userWithEmail = await userService.getByEmail(updateData.email);
+    if (newUserData.email) {
+      const userWithEmail = await userService.getByEmail(newUserData.email);
       if (userWithEmail && userWithEmail.id !== id) {
         return res.status(400).json({
           message: "Email already in use",
@@ -67,9 +76,10 @@ async function partiallyUpdateUser(req, res) {
       }
     }
 
-    const updatedUser = await userService.partiallyUpdate(id, updateData);
+    const updatedUser = await userService.partiallyUpdate(id, newUserData);
     res.status(200).json(updatedUser);
   } catch (error) {
+    console.error("Error partially updating user:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 }

@@ -7,6 +7,7 @@ async function getAll() {
       id: true,
       name: true,
       email: true,
+      bio: true,
       profileImageUrl: true,
     },
   });
@@ -19,6 +20,7 @@ async function getById(id) {
       id: true,
       name: true,
       email: true,
+      bio: true,
       profileImageUrl: true,
       createdAt: true,
     },
@@ -38,11 +40,13 @@ async function update(id, newUserData) {
       name: newUserData.name,
       email: newUserData.email,
       password: newUserData.password,
+      bio: newUserData.bio,
     },
     select: {
       id: true,
       name: true,
       email: true,
+      bio: true,
       profileImageUrl: true,
     },
   });
@@ -60,6 +64,7 @@ async function partiallyUpdate(id, data) {
       id: true,
       name: true,
       email: true,
+      bio: true,
       profileImageUrl: true,
     },
   });
@@ -81,6 +86,7 @@ async function remove(id) {
       id: true,
       name: true,
       email: true,
+      bio: true,
       profileImageUrl: true,
     },
   });
@@ -105,6 +111,7 @@ async function updateProfileImage(userId, imageBuffer) {
       id: true,
       name: true,
       email: true,
+      bio: true,
       profileImageUrl: true,
     },
   });
@@ -132,6 +139,7 @@ async function removeProfileImage(userId) {
       id: true,
       name: true,
       email: true,
+      bio: true,
       profileImageUrl: true,
     },
   });
