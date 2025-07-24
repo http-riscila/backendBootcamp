@@ -4,6 +4,7 @@ import {
   getAll,
   getById,
   getByCategory,
+  getByUser,
   countByStatus,
   update,
   partiallyUpdate,
@@ -89,6 +90,22 @@ async function getItemsByCategory(req, res) {
       message: "Error getting items by category",
       details: error.message,
     });
+  }
+}
+
+async function getItemsByUser(req, res) {
+  try {
+    const { userId } = req.params;
+    const items = await getByUser(userId);
+    if (items.length > 0) {
+      return res.status(200).json(items);
+    } else {
+      return res.status(404).json({ message: "No items found for this user" });
+    }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error getting items by user", details: error.message });
   }
 }
 
@@ -200,6 +217,7 @@ export {
   getAllItems,
   getItemById,
   getItemsByCategory,
+  getItemsByUser,
   countItemsByStatus,
   updateItem,
   partiallyUpdateItem,

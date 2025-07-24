@@ -3,6 +3,8 @@ import {
   createProposal,
   getAllProposals,
   getProposalById,
+  getProposalsBySender,
+  getProposalsByRecipient,
   countProposalsByUser,
   updateProposal,
   partiallyUpdateProposal,
@@ -39,6 +41,16 @@ proposalsRouter.get(
   authenticateUser,
   authorizeCommunityMember,
   getProposalById
+);
+proposalsRouter.get(
+  "/proposals/by-sender/:userId",
+  authenticateUser,
+  getProposalsBySender
+);
+proposalsRouter.get(
+  "/proposals/by-recipient/:userId",
+  authenticateUser,
+  getProposalsByRecipient
 );
 proposalsRouter.get(
   "/proposals/count/accepted/:userId",

@@ -40,6 +40,18 @@ async function getById(id) {
   });
 }
 
+async function getByUser(userId) {
+  return prisma.community.findMany({
+    where: {
+      members: {
+        some: {
+          userId,
+        },
+      },
+    },
+  });
+}
+
 async function countByCreator(userId) {
   return prisma.community.count({
     where: { createdBy: userId },
@@ -148,6 +160,7 @@ export {
   create,
   getAll,
   getById,
+  getByUser,
   countByCreator,
   update,
   partiallyUpdate,

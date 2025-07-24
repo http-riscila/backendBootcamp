@@ -2,6 +2,8 @@ import {
   create,
   getAll,
   getById,
+  getBySender,
+  getByRecipient,
   countByUser,
   update,
   partiallyUpdate,
@@ -47,6 +49,32 @@ async function getProposalById(req, res) {
       .status(500)
       .json({ message: "Error getting proposal", details: error.message });
   }
+}
+
+async function getProposalsBySender(req, res) {
+  try {
+    const { userId } = req.params;
+
+    const proposals = await getBySender(userId);
+    if (proposals) {
+      res.status(200).json(proposals);
+    } else {
+      res.status(404).json({ message: "User did not send any proposals" });
+    }
+  } catch (error) {}
+}
+
+async function getProposalsByRecipient(req, res) {
+  try {
+    const { userId } = req.params;
+
+    const proposals = await getByRecipient(userId);
+    if (proposals) {
+      res.status(200).json(proposals);
+    } else {
+      res.status(404).json({ message: "User did not receive any proposals" });
+    }
+  } catch (error) {}
 }
 
 async function countProposalsByUser(req, res) {
@@ -126,6 +154,8 @@ export {
   createProposal,
   getAllProposals,
   getProposalById,
+  getProposalsBySender,
+  getProposalsByRecipient,
   countProposalsByUser,
   updateProposal,
   partiallyUpdateProposal,
