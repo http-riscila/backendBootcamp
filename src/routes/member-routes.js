@@ -3,6 +3,8 @@ import {
   createMember,
   getAllMembers,
   getMemberById,
+  getMembersByCommunity,
+  countMembersByCommunity,
   updateMember,
   updatePartiallyMember,
   deleteMember,
@@ -30,6 +32,18 @@ membersRouter.post(
 membersRouter.get("/members", authenticateUser, authorizeAdmin, getAllMembers);
 
 membersRouter.get("/members/:id", authenticateUser, getMemberById);
+
+membersRouter.get(
+  "/members/:communityId",
+  authenticateUser,
+  getMembersByCommunity
+);
+
+membersRouter.get(
+  "/members/count/by-community/:communityId",
+  authenticateUser,
+  countMembersByCommunity
+);
 
 membersRouter.put(
   "/members/:id",

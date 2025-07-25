@@ -3,6 +3,7 @@ import {
   create,
   getAll,
   getById,
+  getByCommunity,
   getByCategory,
   getByUser,
   countByStatus,
@@ -68,6 +69,25 @@ async function getItemById(req, res) {
   } catch (error) {
     return res.status(500).json({
       message: "Error getting item by ID",
+      details: error.message,
+    });
+  }
+}
+
+async function getItemByCommunity(req, res) {
+  try {
+    const { communityId } = req.params;
+
+    const itemsByCommunity = await getByCommunity(communityId);
+
+    if (itemsByCommunity > 0) {
+      return res.status(200).json(itemsByCommunity);
+    } else {
+      return res.status(404).json({ message: "Items not found" });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error getting item by community",
       details: error.message,
     });
   }
@@ -216,6 +236,7 @@ export {
   createItem,
   getAllItems,
   getItemById,
+  getItemByCommunity,
   getItemsByCategory,
   getItemsByUser,
   countItemsByStatus,

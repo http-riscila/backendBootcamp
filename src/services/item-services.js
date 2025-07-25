@@ -36,6 +36,12 @@ async function getByUser(userId) {
   });
 }
 
+async function getByCommunity(communityId) {
+  return prisma.item.findMany({
+    where: { communityId },
+  });
+}
+
 async function countByStatus(userId) {
   return prisma.item.count({
     where: { createdBy: userId, status: "AVAILABLE" },
@@ -77,6 +83,7 @@ export {
   create,
   getAll,
   getById,
+  getByCommunity,
   getByCategory,
   getByUser,
   countByStatus,
