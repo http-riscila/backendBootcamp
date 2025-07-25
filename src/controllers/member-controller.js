@@ -8,6 +8,7 @@ import {
   partiallyUpdate,
   remove,
 } from "../services/member-service.js";
+import prisma from "../config/prisma-client.js";
 
 async function createMember(req, res) {
   const memberData = req.body;
@@ -86,6 +87,7 @@ async function countMembersByCommunity(req, res) {
 
     return res.status(200).json(membersByCommunity);
   } catch (error) {
+    console.error("🔥 ERRO AO CONTAR MEMBROS:", error);
     res.status(500).json({
       message: "Error counting members by community",
       details: error.message,
