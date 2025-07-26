@@ -2,6 +2,7 @@ import cloudinary from "../config/cloudinary.js";
 import {
   create,
   getAll,
+  getByCommunity,
   getById,
   getByCategory,
   countByStatus,
@@ -50,6 +51,20 @@ async function getAllItems(req, res) {
     return res
       .status(500)
       .json({ message: "Error getting items", details: error.message });
+  }
+}
+
+async function getItemsByCommunity(req, res) {
+  try {
+    const { communityId } = req.params;
+
+    const items = await getByCommunity(communityId);
+    return res.status(200).json(items);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error getting items by community",
+      details: error.message,
+    });
   }
 }
 
@@ -198,6 +213,7 @@ async function deleteItem(req, res) {
 export {
   createItem,
   getAllItems,
+  getItemsByCommunity,
   getItemById,
   getItemsByCategory,
   countItemsByStatus,
