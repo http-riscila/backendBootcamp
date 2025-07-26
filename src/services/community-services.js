@@ -52,6 +52,9 @@ async function getByUser(userId) {
         },
       },
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 }
 
