@@ -18,6 +18,23 @@ async function getAll() {
   return prisma.item.findMany();
 }
 
+async function getByCommunity(communityId) {
+  return prisma.item.findMany({
+    where: { communityId: communityId },
+    orderBy: { createdAt: "desc" },
+    include: {
+      community: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
+  });
+}
+
 async function getById(id) {
   return prisma.item.findUnique({
     where: { id },
@@ -70,6 +87,7 @@ async function remove(id) {
 export {
   create,
   getAll,
+  getByCommunity,
   getById,
   getByCategory,
   countByStatus,
