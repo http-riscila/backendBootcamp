@@ -2,6 +2,7 @@ import express from "express";
 import {
   createItem,
   getAllItems,
+  getItemsByCommunity,
   getItemById,
   getItemsByCategory,
   countItemsByStatus,
@@ -36,6 +37,12 @@ itemsRouter.get(
   authenticateUser,
   authorizeCommunityMember,
   getAllItems
+);
+itemsRouter.get(
+  "/items/community/:communityId",
+  authenticateUser,
+  authorizeCommunityMember,
+  getItemsByCommunity
 );
 itemsRouter.get(
   "/items/:id",
