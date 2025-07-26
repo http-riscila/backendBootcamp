@@ -24,6 +24,21 @@ async function getUserById(req, res) {
   }
 }
 
+async function getUserByEmail(req, res) {
+  try {
+    const { email } = req.body;
+    const user = await userService.getByEmail(email);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 async function updateUser(req, res) {
   try {
     const { id } = req.params;
@@ -158,6 +173,7 @@ async function removeUserProfileImage(req, res) {
 export {
   getAllUsers,
   getUserById,
+  getUserByEmail,
   updateUser,
   partiallyUpdateUser,
   deleteUser,

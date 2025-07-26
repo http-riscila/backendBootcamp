@@ -49,7 +49,6 @@ communityRouter.get(
 communityRouter.get(
   "/communities/by-user/:userId",
   authenticateUser,
-  authorizeCommunityMember,
   getCommunityByUser
 );
 
