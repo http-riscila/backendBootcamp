@@ -27,6 +27,9 @@ async function getAll() {
       description: true,
       imageUrl: true,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 }
 

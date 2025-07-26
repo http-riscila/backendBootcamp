@@ -29,7 +29,7 @@ model Community {
   description   String?
   createdBy     String
   imageUrl      String?
-    createdAt        DateTime          @default(now())
+  createdAt     DateTime  @default(now())
 
   creator       User      @relation("CreatedBy", fields: [createdBy], references: [id])
 
