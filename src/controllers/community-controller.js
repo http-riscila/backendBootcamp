@@ -1,15 +1,15 @@
 import {
+  countByCreator,
   create,
   getAll,
   getById,
   getByUser,
-  countByCreator,
-  update,
   partiallyUpdate,
   remove,
-  updateCommunityImage,
   removeCommunityImage,
-} from "../services/community-services.js";
+  update,
+  updateCommunityImage,
+} from '../services/community-services.js';
 
 async function createCommunity(req, res) {
   const userId = req.user.id;
@@ -19,7 +19,7 @@ async function createCommunity(req, res) {
     res.status(201).json(newCommunity);
   } catch (error) {
     res.status(400).json({
-      message: "Error creating a new community",
+      message: 'Error creating a new community',
       details: error.message,
     });
   }
@@ -31,7 +31,7 @@ async function getAllCommunities(req, res) {
     res.status(200).json(communities);
   } catch (error) {
     res.status(500).json({
-      message: "Error getting communities",
+      message: 'Error getting communities',
       details: error.message,
     });
   }
@@ -44,13 +44,13 @@ async function getCommunityById(req, res) {
     const community = await getById(id);
 
     if (!community) {
-      return res.status(404).json({ message: "Community not found" });
+      return res.status(404).json({ message: 'Community not found' });
     }
 
     res.status(200).json(community);
   } catch (error) {
     res.status(500).json({
-      message: "Error getting community",
+      message: 'Error getting community',
       details: error.message,
     });
   }
@@ -63,12 +63,12 @@ async function getCommunityByUser(req, res) {
     if (!communities || communities.length === 0) {
       return res
         .status(404)
-        .json({ message: "User is not a member of any community" });
+        .json({ message: 'User is not a member of any community' });
     }
     return res.status(200).json(communities);
   } catch (error) {
     return res.status(500).json({
-      message: "Error getting communities by user",
+      message: 'Error getting communities by user',
       details: error.message,
     });
   }
@@ -82,7 +82,7 @@ async function countCommunityByCreator(req, res) {
     return res.status(200).json(communitiesByUser);
   } catch (error) {
     res.status(500).json({
-      message: "Error counting communities by creator",
+      message: 'Error counting communities by creator',
       details: error.message,
     });
   }
@@ -98,12 +98,11 @@ async function updateCommunity(req, res) {
     if (existentCommunity) {
       const updatedCommunity = await update(id, communityNewData);
       return res.status(200).json(updatedCommunity);
-    } else {
-      return res.status(404).json({ message: "Community not found" });
     }
+    return res.status(404).json({ message: 'Community not found' });
   } catch (error) {
     res.status(400).json({
-      message: "Error updating community",
+      message: 'Error updating community',
       details: error.message,
     });
   }
@@ -119,12 +118,11 @@ async function updatePartiallyCommunity(req, res) {
     if (existentCommunity) {
       const updatedCommunity = await partiallyUpdate(id, communityNewData);
       return res.status(200).json(updatedCommunity);
-    } else {
-      return res.status(404).json({ message: "Community not found" });
     }
+    return res.status(404).json({ message: 'Community not found' });
   } catch (error) {
     res.status(400).json({
-      message: "Error partially updating community",
+      message: 'Error partially updating community',
       details: error.message,
     });
   }
@@ -139,13 +137,12 @@ async function deleteCommunity(req, res) {
     if (existentCommunity) {
       const deletedCommunity = await remove(id);
       return res.status(204).send();
-    } else {
-      return res.status(404).json({ message: "Community not found" });
     }
+    return res.status(404).json({ message: 'Community not found' });
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Error deleting community", details: error.message });
+      .json({ message: 'Error deleting community', details: error.message });
   }
 }
 
@@ -155,22 +152,22 @@ async function updateCommunityImageController(req, res) {
 
     const existingCommunity = await getById(id);
     if (!existingCommunity) {
-      return res.status(404).json({ message: "Community not found" });
+      return res.status(404).json({ message: 'Community not found' });
     }
 
     if (!req.file) {
-      return res.status(400).json({ message: "No image file provided" });
+      return res.status(400).json({ message: 'No image file provided' });
     }
 
     const updatedCommunity = await updateCommunityImage(id, req.file.buffer);
 
     res.status(200).json({
-      message: "Community image updated successfully",
+      message: 'Community image updated successfully',
       community: updatedCommunity,
     });
   } catch (error) {
-    console.error("Error updating community image:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error('Error updating community image:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 }
 
@@ -180,24 +177,24 @@ async function removeCommunityImageController(req, res) {
 
     const existingCommunity = await getById(id);
     if (!existingCommunity) {
-      return res.status(404).json({ message: "Community not found" });
+      return res.status(404).json({ message: 'Community not found' });
     }
 
     if (!existingCommunity.imageUrl) {
       return res
         .status(400)
-        .json({ message: "Community has no image to remove" });
+        .json({ message: 'Community has no image to remove' });
     }
 
     const updatedCommunity = await removeCommunityImage(id);
 
     res.status(200).json({
-      message: "Community image removed successfully",
+      message: 'Community image removed successfully',
       community: updatedCommunity,
     });
   } catch (error) {
-    console.error("Error removing community image:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error('Error removing community image:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 }
 
