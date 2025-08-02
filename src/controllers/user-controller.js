@@ -1,6 +1,6 @@
 import * as userService from '../services/user-services.js';
 
-async function getAllUsers(_, res) {
+async function getAllUsers(req, res) {
   try {
     const users = await userService.getAll();
     res.status(200).json(users);
@@ -20,9 +20,7 @@ async function getUserById(req, res) {
 
     res.status(200).json(user);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: 'Internal server error', error: error.message });
+    res.status(500).json({ message: 'Internal server error' });
   }
 }
 

@@ -1,5 +1,10 @@
 import express from 'express';
-import { login, logout, registerUser } from '../controllers/auth-controller.js';
+import {
+  getCurrentUser,
+  login,
+  logout,
+  registerUser,
+} from '../controllers/auth-controller.js';
 import {
   loginValidator,
   registerValidator,
@@ -24,5 +29,7 @@ authRouter.post(
 );
 
 authRouter.post('/logout', logout);
+
+authRouter.get('/me', authenticateUser, getCurrentUser);
 
 export default authRouter;

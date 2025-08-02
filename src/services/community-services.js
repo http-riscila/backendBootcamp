@@ -1,6 +1,7 @@
-import prisma from "../config/prisma-client.js";
-import { create as createCommunityMember } from "../services/member-service.js";
-import { uploadImage, deleteImage } from "../utils/upload-utils.js";
+import { tr } from 'zod/locales';
+import prisma from '../config/prisma-client.js';
+import { create as createCommunityMember } from '../services/member-service.js';
+import { deleteImage, uploadImage } from '../utils/upload-utils.js';
 
 async function create(communityData, userId) {
   const newCommunity = await prisma.community.create({
@@ -12,7 +13,7 @@ async function create(communityData, userId) {
   });
 
   await createCommunityMember({
-    userId: userId,
+    userId,
     communityId: newCommunity.id,
     isAdmin: true,
   });
@@ -20,7 +21,7 @@ async function create(communityData, userId) {
 }
 
 async function getAll() {
-  return prisma.community.findMany({
+  return await prisma.community.findMany({
     select: {
       id: true,
       name: true,
@@ -28,23 +29,41 @@ async function getAll() {
       imageUrl: true,
     },
     orderBy: {
-      createdAt: "desc",
+      createdAt: 'desc',
     },
   });
 }
 
 async function getById(id) {
-  return prisma.community.findUnique({
+  return await prisma.community.findUnique({
     where: { id },
-    include: {
-      members: true,
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      imageUrl: true,
+      createdAt: true,
       items: true,
+      proposals: true,
+      creator: {
+        omit: {
+          id: true,
+          password: true,
+          createdAt: true,
+        },
+      },
+      members: {
+        select: {
+          isAdmin: true,
+          user: { select: { id: true, name: true, email: true } },
+        },
+      },
     },
   });
 }
 
 async function getByUser(userId) {
-  return prisma.community.findMany({
+  return await prisma.community.findMany({
     where: {
       members: {
         some: {
@@ -53,19 +72,19 @@ async function getByUser(userId) {
       },
     },
     orderBy: {
-      createdAt: "desc",
+      createdAt: 'desc',
     },
   });
 }
 
 async function countByCreator(userId) {
-  return prisma.community.count({
+  return await prisma.community.count({
     where: { createdBy: userId },
   });
 }
 
 async function update(id, communityNewData) {
-  return prisma.community.update({
+  return await prisma.community.update({
     where: { id },
     data: {
       name: communityNewData.name,
@@ -75,7 +94,7 @@ async function update(id, communityNewData) {
 }
 
 async function partiallyUpdate(id, communityNewData) {
-  return prisma.community.update({
+  return await prisma.community.update({
     where: { id },
     data: {
       name: communityNewData.name,
@@ -105,6 +124,7 @@ async function remove(id) {
  * @param {Buffer} imageBuffer - Buffer da imagem
  * @returns {Promise<Object>} - Comunidade atualizada
  */
+
 async function updateCommunityImage(communityId, imageBuffer) {
   const currentCommunity = await prisma.community.findUnique({
     where: { id: communityId },
@@ -117,13 +137,13 @@ async function updateCommunityImage(communityId, imageBuffer) {
 
   const imageUrl = await uploadImage(
     imageBuffer,
-    "communities",
+    'communities',
     `community_${communityId}`
   );
 
-  return prisma.community.update({
+  return await prisma.community.update({
     where: { id: communityId },
-    data: { imageUrl: imageUrl },
+    data: { imageUrl },
     select: {
       id: true,
       name: true,

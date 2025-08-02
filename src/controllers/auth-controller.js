@@ -4,6 +4,7 @@ import { prettifyError } from 'zod';
 import { register } from '../services/auth-service.js';
 import { getByEmail } from '../services/user-services.js';
 import { createUserSchema } from '../utils/authSchemas.js';
+import { getUserByEmail, getUserById } from './user-controller.js';
 
 async function registerUser(req, res) {
   const userData = req.body;
@@ -96,4 +97,16 @@ async function logout(_, res) {
   res.status(200).json({ message: 'Logout successful' });
 }
 
-export { registerUser, login, logout };
+async function getCurrentUser(req, res) {
+  try {
+    const user = await req.user;
+
+    return res.status(200).json({ ...user });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: 'Erro interno do servidor', error: error.message });
+  }
+}
+
+export { registerUser, login, logout, getCurrentUser };
