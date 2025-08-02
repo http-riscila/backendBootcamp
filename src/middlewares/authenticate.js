@@ -28,6 +28,7 @@ function authenticateUser(req, res, next) {
   }*/
 
   // Implementação de autenticação usando cookies
+
   const token = req.cookies.accessToken;
 
   if (!token) {
@@ -39,7 +40,7 @@ function authenticateUser(req, res, next) {
     });
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, userPayload) => {
+  jwt.verify(token, process.env.SECRET_JWT, (err, userPayload) => {
     if (err) {
       return res.status(403).json({
         success: false,

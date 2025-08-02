@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import authRouter from './routes/auth-routes.js';
@@ -10,6 +11,7 @@ import usersRouter from './routes/user-routes.js';
 const app = express();
 
 app.use(cors());
+app.use(cookieParser());
 app.use(express.json());
 
 app.use('/api', itemsRouter);

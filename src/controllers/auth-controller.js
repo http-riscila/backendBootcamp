@@ -54,7 +54,7 @@ async function login(req, res) {
 
     const payload = {
       id: user.id,
-      isAdmin: user.isAdmin,
+      name: user.name,
     };
 
     const token = jwt.sign(payload, process.env.SECRET_JWT, {
@@ -73,7 +73,7 @@ async function login(req, res) {
 
     const { password: _, ...userWithoutPassword } = user;
 
-    return res.status(200).json({
+    res.status(200).json({
       message: 'Login completed successfully',
       token,
       user: userWithoutPassword,
