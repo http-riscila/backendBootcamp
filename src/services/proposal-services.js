@@ -1,4 +1,4 @@
-import prisma from "../config/prisma-client.js";
+import prisma from '../config/prisma-client.js';
 
 async function create(proposalData) {
   return await prisma.proposal.create({
@@ -25,7 +25,7 @@ async function getById(id) {
 }
 
 async function getBySender(userId) {
-  return prisma.proposal.findMany({
+  return await prisma.proposal.findMany({
     where: { senderId: userId },
     include: {
       desiredItem: {
@@ -53,7 +53,7 @@ async function getBySender(userId) {
 }
 
 async function getByRecipient(userId) {
-  return prisma.proposal.findMany({
+  return await prisma.proposal.findMany({
     where: { recipientId: userId },
     include: {
       desiredItem: {
@@ -81,16 +81,16 @@ async function getByRecipient(userId) {
 }
 
 async function countByUser(userId) {
-  return prisma.proposal.count({
+  return await prisma.proposal.count({
     where: {
-      status: "ACCEPTED",
+      status: 'ACCEPTED',
       OR: [{ senderId: userId }, { recipientId: userId }],
     },
   });
 }
 
 async function update(id, newProposalData) {
-  return prisma.proposal.update({
+  return await prisma.proposal.update({
     where: { id },
     data: {
       desiredItemId: newProposalData.desiredItemId,

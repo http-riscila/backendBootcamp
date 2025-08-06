@@ -2,9 +2,13 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { prettifyError } from 'zod';
 import { register } from '../services/auth-service.js';
-import { getByEmail } from '../services/user-services.js';
+import { getByEmail, getById } from '../services/user-services.js';
 import { createUserSchema } from '../utils/authSchemas.js';
-import { getUserByEmail, getUserById } from './user-controller.js';
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  refreshTokens,
+} from '../utils/generateTokens.js';
 
 async function registerUser(req, res) {
   const userData = req.body;
@@ -58,25 +62,23 @@ async function login(req, res) {
       name: user.name,
     };
 
-    const token = jwt.sign(payload, process.env.SECRET_JWT, {
-      expiresIn: '1h',
-    });
+    const accessToken = generateAccessToken(payload);
+    const refreshToken = generateRefreshToken(payload);
 
     const cookieOptions = {
-      httpOnly: false,
+      httpOnly: true,
       sameSite: 'lax',
       secure: false,
-      maxAge: 3_600_000,
       path: '/',
     };
 
-    res.cookie('accessToken', token, cookieOptions);
+    res.cookie('refreshToken', refreshToken, cookieOptions);
 
     const { password: _, ...userWithoutPassword } = user;
 
     res.status(200).json({
       message: 'Login completed successfully',
-      token,
+      token: accessToken,
       user: userWithoutPassword,
     });
   } catch (error) {
@@ -86,22 +88,37 @@ async function login(req, res) {
   }
 }
 
+function refreshJwt(req, res) {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (!(refreshToken && refreshTokens.includes(refreshToken))) {
+    return res.status(403).json({ message: 'Forbidden' });
+  }
+
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+    const newAccessToken = generateAccessToken({
+      id: user.id,
+      name: user.name,
+    });
+    res.status(200).json({ accessToken: newAccessToken });
+  });
+}
+
 async function logout(_, res) {
-  const cookieOptions = {
-    httpOnly: false,
-    sameSite: 'lax',
-    secure: false,
-    path: '/',
-  };
-  await res.clearCookie('accessToken', cookieOptions);
+  await res.clearCookie('refreshToken');
   res.status(200).json({ message: 'Logout successful' });
 }
 
 async function getCurrentUser(req, res) {
   try {
     const user = await req.user;
+    const userData = await getById(user.id);
+    const token = req.cookies.accessToken;
 
-    return res.status(200).json({ ...user });
+    return res.status(200).json({ userData, token });
   } catch (error) {
     return res
       .status(500)
@@ -109,4 +126,4 @@ async function getCurrentUser(req, res) {
   }
 }
 
-export { registerUser, login, logout, getCurrentUser };
+export { registerUser, login, logout, getCurrentUser, refreshJwt };

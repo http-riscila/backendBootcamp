@@ -3,6 +3,7 @@ import {
   getCurrentUser,
   login,
   logout,
+  refreshJwt,
   registerUser,
 } from '../controllers/auth-controller.js';
 import {
@@ -31,5 +32,7 @@ authRouter.post(
 authRouter.post('/logout', logout);
 
 authRouter.get('/me', authenticateUser, getCurrentUser);
+
+authRouter.post('/refresh', authenticateUser, refreshJwt);
 
 export default authRouter;
