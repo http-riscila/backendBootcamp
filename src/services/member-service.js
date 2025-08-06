@@ -26,6 +26,15 @@ async function getByCommunity(communityId) {
   });
 }
 
+async function findMemberByCommunityAndUser(communityId, userId) {
+  return await prisma.communityMember.findFirst({
+    where: {
+      communityId,
+      userId,
+    },
+  });
+}
+
 async function countByCommunity(communityId) {
   return prisma.communityMember.count({
     where: { communityId },
@@ -63,6 +72,7 @@ export {
   getAll,
   getById,
   getByCommunity,
+  findMemberByCommunityAndUser,
   countByCommunity,
   update,
   partiallyUpdate,

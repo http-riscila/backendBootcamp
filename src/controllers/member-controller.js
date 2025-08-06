@@ -3,6 +3,7 @@ import {
   getAll,
   getById,
   getByCommunity,
+  findMemberByCommunityAndUser,
   countByCommunity,
   update,
   partiallyUpdate,
@@ -72,6 +73,42 @@ async function getMembersByCommunity(req, res) {
   }
 }
 
+async function getMemberByCommunityAndUser(req, res) {
+  try {
+    const { communityId, userId } = req.query;
+
+    if (!communityId || !userId) {
+      return res
+        .status(400)
+        .json({ message: "communityId e userId são obrigatórios" });
+    }
+
+    const communityExists = await prisma.community.findUnique({
+      where: { id: communityId },
+    });
+
+    if (!communityExists) {
+      return res.status(404).json({ message: "Community does not exist" });
+    }
+
+    const member = await findMemberByCommunityAndUser(communityId, userId);
+
+    if (!member) {
+      return res
+        .status(404)
+        .json({ message: "Membro não encontrado nessa comunidade" });
+    }
+
+    return res.status(200).json(member);
+  } catch (error) {
+    console.error("Erro no controller getMemberByCommunityAndUser:", error);
+    return res.status(500).json({
+      message: "Erro ao buscar membro por comunidade e usuário",
+      details: error.message,
+    });
+  }
+}
+
 async function countMembersByCommunity(req, res) {
   try {
     const { communityId } = req.params;
@@ -87,7 +124,6 @@ async function countMembersByCommunity(req, res) {
 
     return res.status(200).json(membersByCommunity);
   } catch (error) {
-    console.error("🔥 ERRO AO CONTAR MEMBROS:", error);
     res.status(500).json({
       message: "Error counting members by community",
       details: error.message,
@@ -158,6 +194,7 @@ export {
   getAllMembers,
   getMemberById,
   getMembersByCommunity,
+  getMemberByCommunityAndUser,
   countMembersByCommunity,
   updateMember,
   updatePartiallyMember,

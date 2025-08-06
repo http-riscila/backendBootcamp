@@ -110,6 +110,13 @@ async function partiallyUpdate(id, data) {
   });
 }
 
+async function updateStatus(id, status) {
+  return await prisma.proposal.update({
+    where: { id },
+    data: { status },
+  });
+}
+
 async function remove(id) {
   return await prisma.proposal.delete({
     where: { id },
@@ -125,5 +132,6 @@ export {
   countByUser,
   update,
   partiallyUpdate,
+  updateStatus,
   remove,
 };

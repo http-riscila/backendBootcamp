@@ -4,6 +4,7 @@ import {
   getAllMembers,
   getMemberById,
   getMembersByCommunity,
+  getMemberByCommunityAndUser,
   countMembersByCommunity,
   updateMember,
   updatePartiallyMember,
@@ -37,6 +38,12 @@ membersRouter.get(
   "/members/:communityId",
   authenticateUser,
   getMembersByCommunity
+);
+
+membersRouter.get(
+  "/members/by-community-and-user",
+  authenticateUser,
+  getMemberByCommunityAndUser
 );
 
 membersRouter.get(

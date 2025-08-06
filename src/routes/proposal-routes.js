@@ -8,6 +8,7 @@ import {
   countProposalsByUser,
   updateProposal,
   partiallyUpdateProposal,
+  updateProposalStatus,
   removeProposal,
 } from "../controllers/proposal-controllers.js";
 import authenticateUser from "../middlewares/authenticate.js";
@@ -73,6 +74,12 @@ proposalsRouter.patch(
   partiallyUpdateProposalValidator,
   handleValidationErrors,
   partiallyUpdateProposal
+);
+proposalsRouter.patch(
+  "/proposals/:id/status",
+  authenticateUser,
+  authorizeCommunityMember,
+  updateProposalStatus
 );
 proposalsRouter.delete(
   "/proposals/:id",

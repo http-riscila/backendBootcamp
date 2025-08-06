@@ -39,6 +39,9 @@ async function getByUser(userId) {
 async function getByCommunity(communityId) {
   return prisma.item.findMany({
     where: { communityId },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 }
 

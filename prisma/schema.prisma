@@ -57,6 +57,7 @@ model Item {
   communityId   String
   createdBy     String
   imageUrl      String?
+  createdAt     DateTime  @default(now())
 
   community     Community @relation(fields: [communityId], references: [id])
   creator       User      @relation("CreatedBy", fields: [createdBy], references: [id])

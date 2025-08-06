@@ -7,6 +7,7 @@ import {
   countByUser,
   update,
   partiallyUpdate,
+  updateStatus,
   remove,
 } from "../services/proposal-services.js";
 
@@ -132,6 +133,25 @@ async function partiallyUpdateProposal(req, res) {
   }
 }
 
+async function updateProposalStatus(req, res) {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    const existentProposal = await getById(id);
+
+    if (!existentProposal) {
+      return res.status(404).json({ message: "Proposal not found" });
+    }
+    const updatedProposal = await updateStatus(id, status);
+    res.status(200).json(updatedProposal);
+  } catch (error) {
+    res.status(500).json({
+      message: "Error updating proposal status",
+      details: error.message,
+    });
+  }
+}
+
 async function removeProposal(req, res) {
   try {
     const { id } = req.params;
@@ -159,5 +179,6 @@ export {
   countProposalsByUser,
   updateProposal,
   partiallyUpdateProposal,
+  updateProposalStatus,
   removeProposal,
 };
