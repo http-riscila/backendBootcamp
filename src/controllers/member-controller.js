@@ -2,10 +2,13 @@ import {
   create,
   getAll,
   getById,
+  getByCommunity,
+  countByCommunity,
   update,
   partiallyUpdate,
   remove,
 } from "../services/member-service.js";
+import prisma from "../config/prisma-client.js";
 
 async function createMember(req, res) {
   const memberData = req.body;
@@ -44,6 +47,51 @@ async function getMemberById(req, res) {
     res
       .status(500)
       .json({ message: "Error getting member", details: error.message });
+  }
+}
+
+async function getMembersByCommunity(req, res) {
+  try {
+    const { communityId } = req.params;
+    const communityExists = await prisma.community.findUnique({
+      where: { id: communityId },
+    });
+
+    if (!communityExists) {
+      return res.status(404).json({ message: "Community does not exist" });
+    }
+
+    const membersByCommunity = await getByCommunity(communityId);
+
+    return res.status(200).json(membersByCommunity);
+  } catch (error) {
+    res.status(500).json({
+      message: "Error getting members by community",
+      details: error.message,
+    });
+  }
+}
+
+async function countMembersByCommunity(req, res) {
+  try {
+    const { communityId } = req.params;
+    const communityExists = await prisma.community.findUnique({
+      where: { id: communityId },
+    });
+
+    if (!communityExists) {
+      return res.status(404).json({ message: "Community does not exist" });
+    }
+
+    const membersByCommunity = await countByCommunity(communityId);
+
+    return res.status(200).json(membersByCommunity);
+  } catch (error) {
+    console.error("🔥 ERRO AO CONTAR MEMBROS:", error);
+    res.status(500).json({
+      message: "Error counting members by community",
+      details: error.message,
+    });
   }
 }
 
@@ -109,6 +157,8 @@ export {
   createMember,
   getAllMembers,
   getMemberById,
+  getMembersByCommunity,
+  countMembersByCommunity,
   updateMember,
   updatePartiallyMember,
   deleteMember,

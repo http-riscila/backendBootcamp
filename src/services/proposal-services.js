@@ -24,6 +24,62 @@ async function getById(id) {
   });
 }
 
+async function getBySender(userId) {
+  return prisma.proposal.findMany({
+    where: { senderId: userId },
+    include: {
+      desiredItem: {
+        select: {
+          id: true,
+          name: true,
+          imageUrl: true,
+        },
+      },
+      offeredItem: {
+        select: {
+          id: true,
+          name: true,
+          imageUrl: true,
+        },
+      },
+      sender: {
+        select: {
+          name: true,
+          profileImageUrl: true,
+        },
+      },
+    },
+  });
+}
+
+async function getByRecipient(userId) {
+  return prisma.proposal.findMany({
+    where: { recipientId: userId },
+    include: {
+      desiredItem: {
+        select: {
+          id: true,
+          name: true,
+          imageUrl: true,
+        },
+      },
+      offeredItem: {
+        select: {
+          id: true,
+          name: true,
+          imageUrl: true,
+        },
+      },
+      sender: {
+        select: {
+          name: true,
+          profileImageUrl: true,
+        },
+      },
+    },
+  });
+}
+
 async function countByUser(userId) {
   return prisma.proposal.count({
     where: {
@@ -64,6 +120,8 @@ export {
   create,
   getAll,
   getById,
+  getBySender,
+  getByRecipient,
   countByUser,
   update,
   partiallyUpdate,

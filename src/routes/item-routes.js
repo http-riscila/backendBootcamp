@@ -3,7 +3,9 @@ import {
   createItem,
   getAllItems,
   getItemById,
+  getItemByCommunity,
   getItemsByCategory,
+  getItemsByUser,
   countItemsByStatus,
   updateItem,
   partiallyUpdateItem,
@@ -49,6 +51,12 @@ itemsRouter.get(
   authorizeCommunityMember,
   getItemsByCategory
 );
+itemsRouter.get(
+  "/items/by-community/:communityId",
+  authenticateUser,
+  getItemByCommunity
+);
+itemsRouter.get("/items/by-user/:userId", authenticateUser, getItemsByUser);
 itemsRouter.get(
   "/items/count/available/:userId",
   authenticateUser,

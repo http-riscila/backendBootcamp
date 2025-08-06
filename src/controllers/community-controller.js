@@ -2,6 +2,7 @@ import {
   create,
   getAll,
   getById,
+  getByUser,
   countByCreator,
   update,
   partiallyUpdate,
@@ -50,6 +51,24 @@ async function getCommunityById(req, res) {
   } catch (error) {
     res.status(500).json({
       message: "Error getting community",
+      details: error.message,
+    });
+  }
+}
+
+async function getCommunityByUser(req, res) {
+  const { userId } = req.params;
+  try {
+    const communities = await getByUser(userId);
+    if (!communities || communities.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "User is not a member of any community" });
+    }
+    return res.status(200).json(communities);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error getting communities by user",
       details: error.message,
     });
   }
@@ -186,6 +205,7 @@ export {
   createCommunity,
   getAllCommunities,
   getCommunityById,
+  getCommunityByUser,
   countCommunityByCreator,
   updateCommunity,
   updatePartiallyCommunity,

@@ -3,7 +3,9 @@ import {
   create,
   getAll,
   getById,
+  getByCommunity,
   getByCategory,
+  getByUser,
   countByStatus,
   update,
   partiallyUpdate,
@@ -72,6 +74,25 @@ async function getItemById(req, res) {
   }
 }
 
+async function getItemByCommunity(req, res) {
+  try {
+    const { communityId } = req.params;
+
+    const itemsByCommunity = await getByCommunity(communityId);
+
+    if (itemsByCommunity > 0) {
+      return res.status(200).json(itemsByCommunity);
+    } else {
+      return res.status(404).json({ message: "Items not found" });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error getting item by community",
+      details: error.message,
+    });
+  }
+}
+
 async function getItemsByCategory(req, res) {
   try {
     const { category } = req.query;
@@ -89,6 +110,22 @@ async function getItemsByCategory(req, res) {
       message: "Error getting items by category",
       details: error.message,
     });
+  }
+}
+
+async function getItemsByUser(req, res) {
+  try {
+    const { userId } = req.params;
+    const items = await getByUser(userId);
+    if (items.length > 0) {
+      return res.status(200).json(items);
+    } else {
+      return res.status(404).json({ message: "No items found for this user" });
+    }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error getting items by user", details: error.message });
   }
 }
 
@@ -199,7 +236,9 @@ export {
   createItem,
   getAllItems,
   getItemById,
+  getItemByCommunity,
   getItemsByCategory,
+  getItemsByUser,
   countItemsByStatus,
   updateItem,
   partiallyUpdateItem,

@@ -20,6 +20,18 @@ async function getById(id) {
   });
 }
 
+async function getByCommunity(communityId) {
+  return prisma.communityMember.findMany({
+    where: { communityId },
+  });
+}
+
+async function countByCommunity(communityId) {
+  return prisma.communityMember.count({
+    where: { communityId },
+  });
+}
+
 async function update(id, newMemberData) {
   return prisma.communityMember.update({
     where: { id },
@@ -46,4 +58,13 @@ async function remove(id) {
   });
 }
 
-export { create, getAll, getById, update, partiallyUpdate, remove };
+export {
+  create,
+  getAll,
+  getById,
+  getByCommunity,
+  countByCommunity,
+  update,
+  partiallyUpdate,
+  remove,
+};

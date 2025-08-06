@@ -4,6 +4,7 @@ import {
   createCommunity,
   getAllCommunities,
   getCommunityById,
+  getCommunityByUser,
   countCommunityByCreator,
   updateCommunity,
   updatePartiallyCommunity,
@@ -45,6 +46,18 @@ communityRouter.get(
   getCommunityById
 );
 
+communityRouter.get(
+  "/communities/by-user/:userId",
+  authenticateUser,
+  getCommunityByUser
+);
+
+communityRouter.get(
+  "/communities/count/created-by/:userId",
+  authenticateUser,
+  countCommunityByCreator
+);
+
 communityRouter.put(
   "/communities/:id",
   authenticateUser,
@@ -52,12 +65,6 @@ communityRouter.put(
   updateCommunityValidator,
   handleValidationErrors,
   updateCommunity
-);
-
-communityRouter.get(
-  "/communities/count/created-by/:userId",
-  authenticateUser,
-  countCommunityByCreator
 );
 
 communityRouter.patch(

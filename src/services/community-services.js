@@ -27,6 +27,9 @@ async function getAll() {
       description: true,
       imageUrl: true,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 }
 
@@ -36,6 +39,21 @@ async function getById(id) {
     include: {
       members: true,
       items: true,
+    },
+  });
+}
+
+async function getByUser(userId) {
+  return prisma.community.findMany({
+    where: {
+      members: {
+        some: {
+          userId,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   });
 }
@@ -148,6 +166,7 @@ export {
   create,
   getAll,
   getById,
+  getByUser,
   countByCreator,
   update,
   partiallyUpdate,
