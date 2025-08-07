@@ -25,7 +25,7 @@ async function createCommunity(req, res) {
   }
 }
 
-async function getAllCommunities(req, res) {
+async function getAllCommunities(_, res) {
   try {
     const communities = await getAll();
     res.status(200).json(communities);
@@ -136,7 +136,7 @@ async function deleteCommunity(req, res) {
 
     if (existentCommunity) {
       const deletedCommunity = await remove(id);
-      return res.status(204).send();
+      return res.status(204).send(deletedCommunity);
     }
     return res.status(404).json({ message: 'Community not found' });
   } catch (error) {

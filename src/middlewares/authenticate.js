@@ -2,7 +2,6 @@ import jwt from 'jsonwebtoken';
 
 function authenticateUser(req, res, next) {
   const { authorization } = req.headers;
-  console.log(authorization);
   if (!authorization?.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Token not found or malformed' });
   }

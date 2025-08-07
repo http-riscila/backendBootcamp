@@ -14,10 +14,10 @@ async function authorizeCommunityMember(req, res, next) {
   //const communityId =
   // req.body?.communityId || req.query.communityId || req.params.communityId;
 
-  const communityId = req.params.id;
-  console.log('Community ID:', communityId);
+  const { communityId } = req.query;
+  const { id: paramCommunityId } = req.params;
 
-  if (!communityId) {
+  if (!(communityId || paramCommunityId)) {
     return res.status(400).json({ message: 'Community ID not provided.' });
   }
 
@@ -25,7 +25,7 @@ async function authorizeCommunityMember(req, res, next) {
     const isMember = await prisma.communityMember.findFirst({
       where: {
         userId,
-        communityId,
+        communityId: communityId || paramCommunityId,
       },
     });
     if (!isMember) {
