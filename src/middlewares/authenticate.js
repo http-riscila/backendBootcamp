@@ -23,7 +23,7 @@ function authenticateUser(req, res, next) {
 
     next();
   } catch (error) {
-    console.error("Error validating authorization:", error.message);
+    console.error("Error validating authorization:", error);
     return res.status(401).json({ error: "Token invalid" });
   }
 }

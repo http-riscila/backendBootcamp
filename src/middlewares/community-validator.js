@@ -11,17 +11,12 @@ const isNameValid = body("name")
   .withMessage("Name must be a string");
 
 const isDescriptionValid = body("description")
-  .optional({ checkFalsy: true })
-  .custom((value) => {
-    if (value && value.trim().length > 0 && value.trim().length < 10) {
-      throw new Error('Description must be between 10 and 500 characters');
-    }
-    if (value && value.trim().length > 500) {
-      throw new Error('Description must be between 10 and 500 characters');
-    }
-    return true;
-  })
-  .bail();
+  .optional()
+  .isLength({ min: 10, max: 500 })
+  .withMessage("Description must be between 10 and 500 characters")
+  .bail()
+  .isString()
+  .withMessage("Description must be a string");
 
 export const createCommunityValidator = [isNameValid, isDescriptionValid];
 

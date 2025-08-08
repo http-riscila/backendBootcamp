@@ -50,13 +50,4 @@ export const registerValidator = [
     .bail()
     .isString()
     .withMessage("Bio must be a string"),
-  body("acceptedTerms")
-    .notEmpty()
-    .withMessage("Terms must be accepted for registration")
-    .bail()
-    .isBoolean()
-    .withMessage("Terms acceptance must be a boolean")
-    .bail()
-    .equals('true')
-    .withMessage("Terms must be accepted for registration"),
 ];
