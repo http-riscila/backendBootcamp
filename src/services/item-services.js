@@ -5,7 +5,7 @@ async function create(itemData, userId) {
     data: {
       name: itemData.name,
       description: itemData.description,
-      categoryId: itemData.categoryId,
+      category: itemData.category,
       status: itemData.status,
       imageUrl: itemData.imageUrl,
       communityId: itemData.communityId,

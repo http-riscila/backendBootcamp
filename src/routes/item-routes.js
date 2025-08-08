@@ -27,7 +27,6 @@ const itemsRouter = express.Router();
 itemsRouter.post(
   "/items",
   authenticateUser,
-  authorizeCommunityMember,
   uploadMiddleware,
   createItemValidator,
   handleValidationErrors,

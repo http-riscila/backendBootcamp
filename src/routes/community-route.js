@@ -31,6 +31,7 @@ const communityRouter = express.Router();
 communityRouter.post(
   "/communities",
   authenticateUser,
+  communityImageUploadMiddleware,
   createCommunityValidator,
   handleValidationErrors,
   createCommunity
@@ -41,7 +42,6 @@ communityRouter.get("/communities", authenticateUser, getAllCommunities);
 communityRouter.get(
   "/communities/:id",
   authenticateUser,
-  authorizeCommunityMember,
   handleValidationErrors,
   getCommunityById
 );
