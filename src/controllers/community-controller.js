@@ -1,3 +1,4 @@
+import prisma from '../config/prisma-client.js';
 import {
   countByCreator,
   create,
@@ -47,7 +48,31 @@ async function getCommunityById(req, res) {
       return res.status(404).json({ message: 'Community not found' });
     }
 
-    res.status(200).json(community);
+    // Buscar a categoria com mais itens associada à comunidade
+    const category = await prisma.item.groupBy({
+      where: { communityId: id },
+      by: ['category'],
+      select: {
+        category: true,
+      },
+      orderBy: {
+        _count: {
+          category: 'desc',
+        },
+      },
+      take: 1,
+    });
+    const memberCount = await prisma.communityMember.count({
+      where: { communityId: id },
+    });
+
+    res.status(200).json({
+      community: {
+        ...community,
+        category: category[0].category,
+        memberCount,
+      },
+    });
   } catch (error) {
     res.status(500).json({
       message: 'Error getting community',

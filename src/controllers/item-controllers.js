@@ -79,7 +79,7 @@ async function getItemByCommunity(req, res) {
 
     const itemsByCommunity = await getByCommunity(communityId);
 
-    if (itemsByCommunity > 0) {
+    if (itemsByCommunity.length > 0) {
       return res.status(200).json(itemsByCommunity);
     }
     return res.status(404).json({ message: 'Items not found' });
