@@ -2,11 +2,24 @@ import prisma from "../config/prisma-client.js";
 import { create as createCommunityMember } from "../services/member-service.js";
 import { uploadImage, deleteImage } from "../utils/upload-utils.js";
 
-async function create(communityData, userId) {
+async function create(communityData, userId, imageFile) {
+  let imageUrl = null;
+  
+  // Se há um arquivo de imagem, fazer upload
+  if (imageFile) {
+    try {
+      imageUrl = await uploadImage(imageFile.buffer, "communities", `community_${userId}_${Date.now()}`);
+    } catch (error) {
+      console.error("Error uploading community image:", error);
+      // Continua criando a comunidade mesmo se o upload da imagem falhar
+    }
+  }
+
   const newCommunity = await prisma.community.create({
     data: {
       name: communityData.name,
       description: communityData.description,
+      imageUrl: imageUrl,
       createdBy: userId,
     },
   });
@@ -16,6 +29,7 @@ async function create(communityData, userId) {
     communityId: newCommunity.id,
     isAdmin: true,
   });
+  
   return newCommunity;
 }
 

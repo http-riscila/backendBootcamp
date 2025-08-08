@@ -14,8 +14,10 @@ import {
 async function createCommunity(req, res) {
   const userId = req.user.id;
   const communityData = req.body;
+  const imageFile = req.file; // Arquivo de imagem enviado via multer
+  
   try {
-    const newCommunity = await create(communityData, userId);
+    const newCommunity = await create(communityData, userId, imageFile);
     res.status(201).json(newCommunity);
   } catch (error) {
     res.status(400).json({

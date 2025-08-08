@@ -80,10 +80,10 @@ async function getItemByCommunity(req, res) {
 
     const itemsByCommunity = await getByCommunity(communityId);
 
-    if (itemsByCommunity > 0) {
+    if (itemsByCommunity && itemsByCommunity.length > 0) {
       return res.status(200).json(itemsByCommunity);
     } else {
-      return res.status(404).json({ message: "Items not found" });
+      return res.status(200).json([]); // Retorna array vazio ao invés de 404
     }
   } catch (error) {
     return res.status(500).json({

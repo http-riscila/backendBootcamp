@@ -10,14 +10,13 @@ import authenticateUser from "../middlewares/authenticate.js";
 const authRouter = express.Router();
 
 authRouter.post(
-  "/login",
+  "/auth/login",
   loginValidator,
   handleValidationErrors,
-  login,
-  authenticateUser
+  login
 );
 authRouter.post(
-  "/register",
+  "/auth/register",
   registerValidator,
   handleValidationErrors,
   registerUser
