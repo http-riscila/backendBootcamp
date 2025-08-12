@@ -1,35 +1,34 @@
-import express from "express";
+import express from 'express';
 
 import {
+  countCommunityByCreator,
   createCommunity,
+  deleteCommunity,
   getAllCommunities,
   getCommunityById,
   getCommunityByUser,
-  countCommunityByCreator,
-  updateCommunity,
-  updatePartiallyCommunity,
-  deleteCommunity,
-  updateCommunityImageController,
   removeCommunityImageController,
-} from "../controllers/community-controller.js";
+  updateCommunity,
+  updateCommunityImageController,
+  updatePartiallyCommunity,
+} from '../controllers/community-controller.js';
 
-import authenticateUser from "../middlewares/authenticate.js";
-import authorization from "../middlewares/authorization.js";
-import handleValidationErrors from "../middlewares/validation.js";
-import communityImageUploadMiddleware from "../middlewares/communityImageUploadMiddleware.js";
-
+import authenticateUser from '../middlewares/authenticate.js';
+import authorization from '../middlewares/authorization.js';
 import {
   createCommunityValidator,
-  updateCommunityValidator,
   partiallyUpdateCommunityValidator,
-} from "../middlewares/community-validator.js";
+  updateCommunityValidator,
+} from '../middlewares/community-validator.js';
+import communityImageUploadMiddleware from '../middlewares/communityImageUploadMiddleware.js';
+import handleValidationErrors from '../middlewares/validation.js';
 
 const { authorizeCommunityMember, authorizeAdmin } = authorization;
 
 const communityRouter = express.Router();
 
 communityRouter.post(
-  "/communities",
+  '/communities',
   authenticateUser,
   communityImageUploadMiddleware,
   createCommunityValidator,
@@ -37,30 +36,29 @@ communityRouter.post(
   createCommunity
 );
 
-communityRouter.get("/communities", authenticateUser, getAllCommunities);
+communityRouter.get('/communities', authenticateUser, getAllCommunities);
 
 communityRouter.get(
-  "/communities/:id",
+  '/communities/:id',
   authenticateUser,
   handleValidationErrors,
   getCommunityById
 );
 
 communityRouter.get(
-  "/communities/by-user/:userId",
+  '/communities/by-user/:userId',
   authenticateUser,
-  authorizeCommunityMember,
   getCommunityByUser
 );
 
 communityRouter.get(
-  "/communities/count/created-by/:userId",
+  '/communities/count/created-by/:userId',
   authenticateUser,
   countCommunityByCreator
 );
 
 communityRouter.put(
-  "/communities/:id",
+  '/communities/:id',
   authenticateUser,
   authorizeAdmin,
   updateCommunityValidator,
@@ -69,7 +67,7 @@ communityRouter.put(
 );
 
 communityRouter.patch(
-  "/communities/:id",
+  '/communities/:id',
   authenticateUser,
   authorizeAdmin,
   partiallyUpdateCommunityValidator,
@@ -78,7 +76,7 @@ communityRouter.patch(
 );
 
 communityRouter.delete(
-  "/communities/:id",
+  '/communities/:id',
   authenticateUser,
   authorizeAdmin,
   handleValidationErrors,
@@ -87,7 +85,7 @@ communityRouter.delete(
 
 // Rotas para upload de imagem da comunidade
 communityRouter.post(
-  "/communities/:id/image",
+  '/communities/:id/image',
   authenticateUser,
   authorizeAdmin,
   handleValidationErrors,
@@ -96,7 +94,7 @@ communityRouter.post(
 );
 
 communityRouter.delete(
-  "/communities/:id/image",
+  '/communities/:id/image',
   authenticateUser,
   authorizeAdmin,
   handleValidationErrors,

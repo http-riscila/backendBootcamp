@@ -1,15 +1,15 @@
 import cloudinary from "../config/cloudinary.js";
 import {
+  countByStatus,
   create,
   getAll,
-  getById,
-  getByCommunity,
   getByCategory,
+  getByCommunity,
+  getById,
   getByUser,
-  countByStatus,
-  update,
   partiallyUpdate,
   remove,
+  update,
 } from "../services/item-services.js";
 
 async function createItem(req, res) {
@@ -63,9 +63,8 @@ async function getItemById(req, res) {
 
     if (item) {
       return res.status(200).json(item);
-    } else {
-      return res.status(404).json({ message: "Item not found" });
     }
+    return res.status(404).json({ message: "Item not found" });
   } catch (error) {
     return res.status(500).json({
       message: "Error getting item by ID",
@@ -80,11 +79,10 @@ async function getItemByCommunity(req, res) {
 
     const itemsByCommunity = await getByCommunity(communityId);
 
-    if (itemsByCommunity && itemsByCommunity.length > 0) {
+    if (itemsByCommunity.length > 0) {
       return res.status(200).json(itemsByCommunity);
-    } else {
-      return res.status(200).json([]); // Retorna array vazio ao invés de 404
     }
+    return res.status(404).json({ message: "Items not found" });
   } catch (error) {
     return res.status(500).json({
       message: "Error getting item by community",
@@ -100,11 +98,10 @@ async function getItemsByCategory(req, res) {
     const items = await getByCategory(category);
     if (items.length > 0) {
       return res.status(200).json(items);
-    } else {
-      return res
-        .status(404)
-        .json({ message: "No items found for this category" });
     }
+    return res
+      .status(404)
+      .json({ message: "No items found for this category" });
   } catch (error) {
     return res.status(500).json({
       message: "Error getting items by category",
@@ -119,9 +116,8 @@ async function getItemsByUser(req, res) {
     const items = await getByUser(userId);
     if (items.length > 0) {
       return res.status(200).json(items);
-    } else {
-      return res.status(404).json({ message: "No items found for this user" });
     }
+    return res.status(404).json({ message: "No items found for this user" });
   } catch (error) {
     return res
       .status(500)
@@ -159,7 +155,9 @@ async function updateItem(req, res) {
         const uploadStream = cloudinary.uploader.upload_stream(
           { folder: "items" },
           (error, result) => {
-            if (error) return reject(error);
+            if (error) {
+              return reject(error);
+            }
             resolve(result);
           }
         );
@@ -194,7 +192,9 @@ async function partiallyUpdateItem(req, res) {
         const uploadStream = cloudinary.uploader.upload_stream(
           { folder: "items" },
           (error, result) => {
-            if (error) return reject(error);
+            if (error) {
+              return reject(error);
+            }
             resolve(result);
           }
         );
@@ -221,10 +221,9 @@ async function deleteItem(req, res) {
 
     if (existentItem) {
       const removedItem = await remove(id);
-      return res.status(204).send();
-    } else {
-      return res.status(404).json({ message: "Item not found" });
+      return res.status(204).send(removedItem);
     }
+    return res.status(404).json({ message: "Item not found" });
   } catch (error) {
     return res
       .status(500)

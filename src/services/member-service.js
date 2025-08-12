@@ -1,39 +1,39 @@
-import prisma from "../config/prisma-client.js";
+import prisma from '../config/prisma-client.js';
 
 async function create(memberData) {
-  return prisma.communityMember.create({
+  return await prisma.communityMember.create({
     data: {
       userId: memberData.userId,
       communityId: memberData.communityId,
-      isAdmin: memberData.isAdmin || false,
+      isAdmin: memberData.isAdmin,
     },
   });
 }
 
 async function getAll() {
-  return prisma.communityMember.findMany();
+  return await prisma.communityMember.findMany();
 }
 
 async function getById(id) {
-  return prisma.communityMember.findUnique({
+  return await prisma.communityMember.findUnique({
     where: { id },
   });
 }
 
 async function getByCommunity(communityId) {
-  return prisma.communityMember.findMany({
+  return await prisma.communityMember.findMany({
     where: { communityId },
   });
 }
 
 async function countByCommunity(communityId) {
-  return prisma.communityMember.count({
+  return await prisma.communityMember.count({
     where: { communityId },
   });
 }
 
 async function update(id, newMemberData) {
-  return prisma.communityMember.update({
+  return await prisma.communityMember.update({
     where: { id },
     data: {
       userId: newMemberData.userId,
@@ -43,7 +43,7 @@ async function update(id, newMemberData) {
 }
 
 async function partiallyUpdate(id, newMemberData) {
-  return prisma.communityMember.update({
+  return await prisma.communityMember.update({
     where: { id },
     data: {
       userId: newMemberData.userId,
@@ -53,7 +53,7 @@ async function partiallyUpdate(id, newMemberData) {
 }
 
 async function remove(id) {
-  return prisma.communityMember.delete({
+  return await prisma.communityMember.delete({
     where: { id },
   });
 }

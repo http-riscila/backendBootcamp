@@ -1,4 +1,4 @@
-import prisma from "../config/prisma-client.js";
+import prisma from '../config/prisma-client.js';
 
 async function create(itemData, userId) {
   return await prisma.item.create({
@@ -15,44 +15,44 @@ async function create(itemData, userId) {
 }
 
 async function getAll() {
-  return prisma.item.findMany();
+  return await prisma.item.findMany();
 }
 
 async function getById(id) {
-  return prisma.item.findUnique({
+  return await prisma.item.findUnique({
     where: { id },
   });
 }
 
 async function getByCategory(category) {
-  return prisma.item.findMany({
+  return await prisma.item.findMany({
     where: { category },
   });
 }
 
 async function getByUser(userId) {
-  return prisma.item.findMany({
+  return await prisma.item.findMany({
     where: { createdBy: userId },
   });
 }
 
 async function getByCommunity(communityId) {
-  return prisma.item.findMany({
+  return await prisma.item.findMany({
     where: { communityId },
   });
 }
 
 async function countByStatus(userId) {
-  return prisma.item.count({
-    where: { createdBy: userId, status: "AVAILABLE" },
+  return await prisma.item.count({
+    where: { createdBy: userId, status: 'AVAILABLE' },
   });
 }
 
 async function update(id, newItemData) {
   if (!newItemData) {
-    throw new Error("New item data is required for update");
+    throw new Error('New item data is required for update');
   }
-  return prisma.item.update({
+  return await prisma.item.update({
     where: { id },
     data: {
       name: newItemData.name,
@@ -67,14 +67,14 @@ async function update(id, newItemData) {
 }
 
 async function partiallyUpdate(id, data) {
-  return prisma.item.update({
+  return await prisma.item.update({
     where: { id },
     data,
   });
 }
 
 async function remove(id) {
-  return prisma.item.delete({
+  return await prisma.item.delete({
     where: { id },
   });
 }
