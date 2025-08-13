@@ -1,26 +1,40 @@
-import prisma from "../config/prisma-client.js";
-import { create as createCommunityMember } from "../services/member-service.js";
-import { uploadImage, deleteImage } from "../utils/upload-utils.js";
+import prisma from '../config/prisma-client.js';
+import { create as createCommunityMember } from '../services/member-service.js';
+import { deleteImage, uploadImage } from '../utils/upload-utils.js';
 
-async function create(communityData, userId) {
+async function create(communityData, userId, imageFile) {
+  let imageUrl = null;
+  
+  // Se há um arquivo de imagem, fazer upload
+  if (imageFile) {
+    try {
+      imageUrl = await uploadImage(imageFile.buffer, "communities", `community_${userId}_${Date.now()}`);
+    } catch (error) {
+      console.error("Error uploading community image:", error);
+      // Continua criando a comunidade mesmo se o upload da imagem falhar
+    }
+  }
+
   const newCommunity = await prisma.community.create({
     data: {
       name: communityData.name,
       description: communityData.description,
+      imageUrl: imageUrl,
       createdBy: userId,
     },
   });
 
   await createCommunityMember({
-    userId: userId,
+    userId,
     communityId: newCommunity.id,
     isAdmin: true,
   });
+  
   return newCommunity;
 }
 
 async function getAll() {
-  return prisma.community.findMany({
+  return await prisma.community.findMany({
     select: {
       id: true,
       name: true,
@@ -28,23 +42,41 @@ async function getAll() {
       imageUrl: true,
     },
     orderBy: {
-      createdAt: "desc",
+      createdAt: 'desc',
     },
   });
 }
 
 async function getById(id) {
-  return prisma.community.findUnique({
+  return await prisma.community.findUnique({
     where: { id },
-    include: {
-      members: true,
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      imageUrl: true,
+      createdAt: true,
       items: true,
+      proposals: true,
+      creator: {
+        omit: {
+          id: true,
+          password: true,
+          createdAt: true,
+        },
+      },
+      members: {
+        select: {
+          isAdmin: true,
+          user: { select: { id: true, name: true, email: true } },
+        },
+      },
     },
   });
 }
 
 async function getByUser(userId) {
-  return prisma.community.findMany({
+  return await prisma.community.findMany({
     where: {
       members: {
         some: {
@@ -53,19 +85,19 @@ async function getByUser(userId) {
       },
     },
     orderBy: {
-      createdAt: "desc",
+      createdAt: 'desc',
     },
   });
 }
 
 async function countByCreator(userId) {
-  return prisma.community.count({
+  return await prisma.community.count({
     where: { createdBy: userId },
   });
 }
 
 async function update(id, communityNewData) {
-  return prisma.community.update({
+  return await prisma.community.update({
     where: { id },
     data: {
       name: communityNewData.name,
@@ -75,7 +107,7 @@ async function update(id, communityNewData) {
 }
 
 async function partiallyUpdate(id, communityNewData) {
-  return prisma.community.update({
+  return await prisma.community.update({
     where: { id },
     data: {
       name: communityNewData.name,
@@ -105,6 +137,7 @@ async function remove(id) {
  * @param {Buffer} imageBuffer - Buffer da imagem
  * @returns {Promise<Object>} - Comunidade atualizada
  */
+
 async function updateCommunityImage(communityId, imageBuffer) {
   const currentCommunity = await prisma.community.findUnique({
     where: { id: communityId },
@@ -117,13 +150,13 @@ async function updateCommunityImage(communityId, imageBuffer) {
 
   const imageUrl = await uploadImage(
     imageBuffer,
-    "communities",
+    'communities',
     `community_${communityId}`
   );
 
-  return prisma.community.update({
+  return await prisma.community.update({
     where: { id: communityId },
-    data: { imageUrl: imageUrl },
+    data: { imageUrl },
     select: {
       id: true,
       name: true,

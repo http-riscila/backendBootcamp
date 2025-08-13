@@ -1,22 +1,22 @@
-import { body } from "express-validator";
+import { body } from 'express-validator';
 
-const isUserIdValid = body("userId")
+const isUserIdValid = body('userId')
   .notEmpty()
-  .withMessage("User ID cannot be empty")
+  .withMessage('User ID cannot be empty')
   .bail()
-  .isInt({ min: 1 })
-  .withMessage("User ID must be a positive integer");
+  .isString()
+  .withMessage('User ID must be a string');
 
-const isCommunityIdValid = body("communityId")
+const isCommunityIdValid = body('communityId')
   .notEmpty()
-  .withMessage("Community ID cannot be empty")
+  .withMessage('Community ID cannot be empty')
   .bail()
-  .isInt({ min: 1 })
-  .withMessage("Community ID must be a positive integer");
+  .isString()
+  .withMessage('Community ID must be a string');
 
-const isAdminValid = body("isAdmin")
+const isAdminValid = body('isAdmin')
   .isBoolean()
-  .withMessage("isAdmin must be a boolean value");
+  .withMessage('isAdmin must be a boolean value');
 
 export const createMemberValidator = [
   isUserIdValid,
@@ -25,16 +25,13 @@ export const createMemberValidator = [
 ];
 
 export const updateMemberValidator = [
-  body("userId")
+  body('userId').optional().isString().withMessage('User ID must be a string'),
+  body('communityId')
     .optional()
-    .isInt({ min: 1 })
-    .withMessage("User ID must be a positive integer"),
-  body("communityId")
-    .optional()
-    .isInt({ min: 1 })
-    .withMessage("Community ID must be a positive integer"),
-  body("isAdmin")
+    .isString()
+    .withMessage('Community ID must be a string'),
+  body('isAdmin')
     .optional()
     .isBoolean()
-    .withMessage("isAdmin must be a boolean value"),
+    .withMessage('isAdmin must be a boolean value'),
 ];

@@ -1,52 +1,60 @@
-import express from "express";
+import express from 'express';
 import {
+  countMembersByCommunity,
   createMember,
+  deleteMember,
   getAllMembers,
+  getMemberByCommunityAndUser,
   getMemberById,
   getMembersByCommunity,
-  countMembersByCommunity,
   updateMember,
   updatePartiallyMember,
-  deleteMember,
-} from "../controllers/member-controller.js";
-import authenticateUser from "../middlewares/authenticate.js";
-import authorization from "../middlewares/authorization.js";
+} from '../controllers/member-controller.js';
+import authenticateUser from '../middlewares/authenticate.js';
+import authorization from '../middlewares/authorization.js';
 import {
   createMemberValidator,
   updateMemberValidator,
-} from "../middlewares/member-validator.js";
-import handleValidationErrors from "../middlewares/validation.js";
+} from '../middlewares/member-validator.js';
+import handleValidationErrors from '../middlewares/validation.js';
 
 const { authorizeCommunityMember, authorizeAdmin } = authorization;
 
 const membersRouter = express.Router();
 
 membersRouter.post(
-  "/members",
+  '/members',
   authenticateUser,
   createMemberValidator,
   handleValidationErrors,
   createMember
 );
 
-membersRouter.get("/members", authenticateUser, authorizeAdmin, getAllMembers);
+membersRouter.get('/members', authenticateUser, authorizeAdmin, getAllMembers);
 
-membersRouter.get("/members/:id", authenticateUser, getMemberById);
+membersRouter.get('/members/:id', authenticateUser, getMemberById);
 
 membersRouter.get(
-  "/members/:communityId",
+  '/members/:communityId',
   authenticateUser,
   getMembersByCommunity
 );
 
 membersRouter.get(
-  "/members/count/by-community/:communityId",
+  '/members/:id/by-community-and-user',
+  authenticateUser,
+  authorizeCommunityMember,
+  getMemberByCommunityAndUser
+);
+
+membersRouter.get(
+  '/members/count/by-community/:communityId',
   authenticateUser,
   countMembersByCommunity
 );
 
 membersRouter.put(
-  "/members/:id",
+  '/members/:id',
   authenticateUser,
   authorizeCommunityMember,
   updateMemberValidator,
@@ -55,7 +63,7 @@ membersRouter.put(
 );
 
 membersRouter.patch(
-  "/members/:id",
+  '/members/:id',
   authenticateUser,
   authorizeCommunityMember,
   updateMemberValidator,
@@ -64,7 +72,7 @@ membersRouter.patch(
 );
 
 membersRouter.delete(
-  "/members/:id",
+  '/members/:id',
   authenticateUser,
   authorizeCommunityMember,
   deleteMember

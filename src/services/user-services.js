@@ -1,8 +1,8 @@
-import prisma from "../config/prisma-client.js";
-import { uploadImage, deleteImage } from "../utils/upload-utils.js";
+import prisma from '../config/prisma-client.js';
+import { deleteImage, uploadImage } from '../utils/upload-utils.js';
 
 async function getAll() {
-  return prisma.user.findMany({
+  return await prisma.user.findMany({
     select: {
       id: true,
       name: true,
@@ -14,7 +14,7 @@ async function getAll() {
 }
 
 async function getById(id) {
-  return prisma.user.findUnique({
+  return await prisma.user.findUnique({
     where: { id },
     select: {
       id: true,
@@ -28,13 +28,13 @@ async function getById(id) {
 }
 
 async function getByEmail(email) {
-  return prisma.user.findUnique({
+  return await prisma.user.findUnique({
     where: { email },
   });
 }
 
 async function update(id, newUserData) {
-  return prisma.user.update({
+  return await prisma.user.update({
     where: { id },
     data: {
       name: newUserData.name,
@@ -57,7 +57,7 @@ async function partiallyUpdate(id, data) {
 
   const updateData = password ? { ...safeData, password } : safeData;
 
-  return prisma.user.update({
+  return await prisma.user.update({
     where: { id },
     data: updateData,
     select: {
@@ -102,7 +102,7 @@ async function updateProfileImage(userId, imageBuffer) {
     await deleteImage(currentUser.profileImageUrl);
   }
 
-  const imageUrl = await uploadImage(imageBuffer, "users", `user_${userId}`);
+  const imageUrl = await uploadImage(imageBuffer, 'users', `user_${userId}`);
 
   return prisma.user.update({
     where: { id: userId },
