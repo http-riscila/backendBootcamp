@@ -33,7 +33,7 @@ async function getAllCommunities(_, res) {
     const querySchema = z.object({
         page: z.coerce.number().int().min(1).default(1),
         limit: z.coerce.number().int().min(1).max(100).default(10),
-        orderBy: z.string().optional().default('createdAt'),
+        orderBy: z.string().optional().default('memberCount'),
         orderDirection: z.enum(['desc', 'asc']).default('desc'),
         search: z.string().optional(),
 
