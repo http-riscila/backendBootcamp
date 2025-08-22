@@ -36,7 +36,6 @@ async function getAllCommunities(_, res) {
         orderBy: z.string().optional().default('memberCount'),
         orderDirection: z.enum(['desc', 'asc']).default('desc'),
         search: z.string().optional(),
-
     })
 
     const { page, limit, orderBy, orderDirection, search} = querySchema.parse(_.query);
@@ -73,19 +72,20 @@ async function getCommunityById(req, res) {
         }
 
         // Buscar a categoria com mais itens associada à comunidade
-        const category = await prisma.item.groupBy({
-            where: {communityId: id},
-            by: ['category'],
-            select: {
-                category: true,
-            },
-            orderBy: {
-                _count: {
-                    category: 'desc',
-                },
-            },
-            take: 1,
-        });
+        // const category = await prisma.item.groupBy({
+        //     where: {communityId: id},
+        //     by: ['category'],
+        //     select: {
+        //         category: true,
+        //     },
+        //     orderBy: {
+        //         _count: {
+        //             category: 'desc',
+        //         },
+        //     },
+        //     take: 1,
+        // });
+
         const memberCount = await prisma.communityMember.count({
             where: {communityId: id},
         });
@@ -93,7 +93,7 @@ async function getCommunityById(req, res) {
         res.status(200).json({
             community: {
                 ...community,
-                category: category[0].category,
+                // category: category[0].category,
                 memberCount,
             },
         });
